@@ -8,7 +8,7 @@ def index():
 
 @app.route('/users')
 def get_users():
-    return 'Hello Flask'
+    return 'Users'
 
 @app.route('/user', methods=['POST'])
 def add_user():
