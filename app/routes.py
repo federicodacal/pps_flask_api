@@ -1,19 +1,22 @@
-from flask import request, redirect, url_for, flash
+from flask import request, redirect, url_for, flash, jsonify
 from app import app, db 
 from app.models import User
 
 @app.route('/')
 def index():
-    return 'Hello Flask'
+    return 'Hello Flask Python'
 
-@app.route('/users')
+@app.route('/users', methods=['GET'])
 def get_users():
-    return 'Users'
+    users = User.query.all()
+    users_list = [{"id": user.id, "name": user.name} for user in users]
+    return jsonify(users_list)
 
-@app.route('/user', methods=['POST'])
+@app.route('/user', methods=['GET', 'POST'])
 def add_user():
     name = 'Pepe'
-    new_user = User(name)
+    new_user = User(name=name)
     db.session.add(new_user)
-    db.session.commit
-    flash('Agregado!')
+    db.session.commit()
+    flash('Agregado!', 'success')
+    return 'Add a user by sending a POST request.'
