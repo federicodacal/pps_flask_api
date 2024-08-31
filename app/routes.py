@@ -18,5 +18,4 @@ def add_user():
     new_user = User(name=name)
     db.session.add(new_user)
     db.session.commit()
-    flash('Agregado!', 'success')
     return 'Add a user by sending a POST request.'
