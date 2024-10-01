@@ -1,0 +1,7 @@
+# environment
+pyvenv.cfg
+.cfg
+
+# idea
+.idea
+idea/
