@@ -1,4 +1,4 @@
-class Audio
+class Audio:
     def __init__(self, ID, title, file_name, description, BPM, genre, audio_type ):
         self._ID = ID
         self._title = title
@@ -10,7 +10,7 @@ class Audio
 
     @property
     def ID(self):
-        return self._id
+        return self._ID
 
     @ID.setter
     def ID(self, ID):
@@ -22,7 +22,7 @@ class Audio
 
     @title.setter
     def title(self, title):
-        self.title = title
+        self._title = title
 
     @property
     def file_name(self):
@@ -30,7 +30,7 @@ class Audio
 
     @file_name.setter
     def file_name(self, file_name):
-        self.file_name = file_name
+        self._file_name = file_name
 
     @property
     def description(self):
@@ -38,7 +38,7 @@ class Audio
 
     @description.setter
     def description(self, descripcion):
-        self.description = descripcion
+        self._description = descripcion
 
     @property
     def BPM(self):
@@ -46,7 +46,7 @@ class Audio
 
     @BPM.setter
     def BPM(self, BPM):
-        self.BPM = BPM
+        self._BPM = BPM
 
     @property
     def genre(self):
@@ -54,7 +54,7 @@ class Audio
 
     @genre.setter
     def genre(self, genre):
-        self.genre = genre
+        self._genre = genre
 
     @property
     def audio_type(self):
@@ -62,4 +62,4 @@ class Audio
 
     @audio_type.setter
     def audio_type(self, audio_type):
-        self.audio_type = audio_type
+        self._audio_type = audio_type
