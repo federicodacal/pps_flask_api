@@ -1,7 +1,10 @@
 # environment
 pyvenv.cfg
 .cfg
+venv/
+ __pycache__/
 
 # idea
 .idea
 idea/
+
