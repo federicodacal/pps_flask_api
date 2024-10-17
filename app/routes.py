@@ -15,7 +15,7 @@ def get_users():
 @app.route('/crear', methods=['GET', 'POST'])
 def add_user():
     name = 'Nuevo'
-    new_user = User(username=name)
+    new_user = User(name=name)
     db.session.add(new_user)
     db.session.commit()
     return 'Add a user by sending a POST request.'
