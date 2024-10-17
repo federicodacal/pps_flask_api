@@ -9,13 +9,13 @@ def index():
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
-    users_list = [{"id": user.ID, "name": user.username} for user in users]
+    users_list = [{"id": user.id, "name": user.name} for user in users]
     return jsonify(users_list)
 
-@app.route('/user', methods=['GET', 'POST'])
+@app.route('/crear', methods=['GET', 'POST'])
 def add_user():
-    name = 'Pepe'
-    new_user = User(username=name)
+    name = 'Nuevo'
+    new_user = User(name=name)
     db.session.add(new_user)
     db.session.commit()
     return 'Add a user by sending a POST request.'
