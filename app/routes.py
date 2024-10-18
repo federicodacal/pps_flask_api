@@ -1,6 +1,6 @@
 from flask import jsonify
-from app import app, db 
-from app.models.user import User
+from pps_flask_api.app import app, db
+from pps_flask_api.app.models.user import User
 
 @app.route('/')
 def index():
