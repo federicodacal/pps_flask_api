@@ -1,7 +1,9 @@
-from app import db 
+from pps_flask_api.app import db
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    #name = db.Column(db.String(50), nullable=False)
+
     personal_ID = db.Column(db.Integer, nullable=False)
     profile = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(50), nullable=False)
