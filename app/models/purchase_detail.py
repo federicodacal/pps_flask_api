@@ -1,4 +1,4 @@
-from app import db
+from pps_flask_api.app import db
 
 class Purchase_detail(db.Model):
     ID = db.Column(db.Integer, primary_key=True)

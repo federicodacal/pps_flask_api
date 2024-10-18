@@ -1,4 +1,4 @@
-from app import db
+from pps_flask_api.app import db
 
 class Favorite(db.Model):
     ID = db.Column(db.Integer, primary_key=True)
