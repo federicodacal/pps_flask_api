@@ -1,6 +1,7 @@
 from pps_flask_api.app import db
 
 class Audio(db.Model):
+    __tablename__= 'audios'
     ID = db.Column(db.Integer, primary_key=True)
     creator_ID = db.Column(db.Integer, primary_key=True)
     file_name = db.Column(db.String(100), nullable=False)

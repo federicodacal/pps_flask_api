@@ -15,8 +15,9 @@ migrate = Migrate(app, db)
 
 # Importar rutas y modelos después de definir la app
 from pps_flask_api.app import routes
-from pps_flask_api.app.models import *
-
+from pps_flask_api.app.models.user import User
+from pps_flask_api.app.models.purchase import Purchase
+ 
 # Configuración del logging
 if not app.debug:
     stream_handler = logging.StreamHandler()
