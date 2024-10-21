@@ -1,20 +1,23 @@
 from flask import Flask
-from pps_flask_api.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
 import logging
+import os
 
+# Crear una instancia de Flask
 app = Flask(__name__)
-app.config.from_object(Config)
+
+# Configuración de la app
+app.config.from_object('pps_flask_api.config.Config')
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# Importar rutas y modelos después de definir la app
 from pps_flask_api.app import routes
 from pps_flask_api.app.models import *
 
-# Setup console loggin
+# Configuración del logging
 if not app.debug:
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(logging.INFO)
