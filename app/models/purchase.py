@@ -4,7 +4,7 @@ from pps_flask_api.app import db
 class Purchase(db.Model):
     __tablename__= 'ventas'
 
-    ID = db.Column(db.Integer, primary_key=True)
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     buyer_ID = db.Column(db.String(50), db.ForeignKey('usuarios.id'), nullable=False)
     flow_type = db.Column(db.String(50), nullable=False)
     currency = db.Column(db.String(50), nullable=False)
