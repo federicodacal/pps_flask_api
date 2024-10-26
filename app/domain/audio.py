@@ -34,7 +34,7 @@ class Audio:
 
     @property
     def description(self):
-        return self._descripcion
+        return self._description
 
     @description.setter
     def description(self, descripcion):

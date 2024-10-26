@@ -1,10 +1,12 @@
+from datetime import datetime
+
+from sqlalchemy import func
 from pps_flask_api.app import db
 
 class User(db.Model):
     __tablename__= 'usuarios'
-    id = db.Column(db.Integer, primary_key=True)
-    #name = db.Column(db.String(50), nullable=False)
 
+    id = db.Column(db.String(50), primary_key=True)
     personal_ID = db.Column(db.Integer, nullable=False)
     profile = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(50), nullable=False)
@@ -14,11 +16,13 @@ class User(db.Model):
     phone_number = db.Column(db.Integer, nullable=False)
     account_ID = db.Column(db.Integer, nullable=True)
     credits = db.Column(db.Integer, nullable=True)
-    created_at = db.Column(db.String(50), nullable=False)
-    modified_at = db.Column(db.String(50), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+    modified_at = db.Column(db.DateTime, nullable=False)
+    points = db.Column(db.Integer, nullable=True)
     # TODO
-    # points = db.Column(db.Integer, nullable=True)
-    # purchased_audios = db.Column(db.Integer, nullable=True)
     # favorites_audios = db.Column(db.String(50), nullable=False)
     # subscription_id = db.Column(db.Integer(20), nullable=False)
-    # uploaded_audios = db.Column(db.Integer(20), nullable=False)
+    
+    # Relaciones
+    purchased_audios = db.relationship('Purchase', backref='buyer', lazy=True)
+    uploaded_audios = db.relationship('Audio', backref='creator', lazy=True)

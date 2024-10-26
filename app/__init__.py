@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from .routes.user_routes import user_routes
 import logging
 import os
 
@@ -13,8 +14,10 @@ app.config.from_object('pps_flask_api.config.Config')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# Configuración de las rutas
+app.register_blueprint(user_routes)
+
 # Importar rutas y modelos después de definir la app
-from pps_flask_api.app import routes
 from pps_flask_api.app.models.user import User
 from pps_flask_api.app.models.audio import Audio
 from pps_flask_api.app.models.favorites import Favorite
