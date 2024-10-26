@@ -6,7 +6,7 @@ from pps_flask_api.app import db
 class User(db.Model):
     __tablename__= 'usuarios'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(50), primary_key=True)
     personal_ID = db.Column(db.Integer, nullable=False)
     profile = db.Column(db.String(50), nullable=False)
     username = db.Column(db.String(50), nullable=False)
@@ -17,15 +17,15 @@ class User(db.Model):
     account_ID = db.Column(db.Integer, nullable=True)
     credits = db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
+    subscription_id = db.Column(db.Integer, nullable=False)
     modified_at = db.Column(db.DateTime, nullable=False)
     points = db.Column(db.Integer, nullable=True)
-    # TODO
-    # favorites_audios = db.Column(db.String(50), nullable=False)
-    # subscription_id = db.Column(db.Integer(20), nullable=False)
     
     # Relaciones
     purchased_audios = db.relationship('Purchase', backref='buyer', lazy=True)
     uploaded_audios = db.relationship('Audio', backref='creator', lazy=True)
+    favorites = db.relationship('Favorite', backref='user', lazy=True)
+    favorite_audios = db.relationship('Audio', secondary='favoritos', backref='favorited_by_users', lazy='dynamic')
 
     def __init__(self, id, personal_ID, profile, username, email, full_name, state, phone_number,
                  account_ID=None, credits=None, created_at=None, modified_at=None, points=None):
