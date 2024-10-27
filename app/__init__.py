@@ -1,8 +1,8 @@
 from flask import Flask
-from .db import db, migrate 
-from .routes.user_routes import user_routes
-from .routes.audio_routes import audio_routes
-from .routes.purchase_routes import purchase_routes
+from pps_flask_api.app.db import db, migrate 
+from pps_flask_api.app.routes.user_routes import user_routes
+from pps_flask_api.app.routes.audio_routes import audio_routes
+from pps_flask_api.app.routes.purchase_routes import purchase_routes
 import logging
 import os
 

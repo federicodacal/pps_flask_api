@@ -10,5 +10,8 @@
             "src": "/(.*)",
             "dest": "run.py"
         }
-    ]
+    ],
+    "env": {
+        "PYTHONPATH": "pps_flask_api"
+    }
 }
