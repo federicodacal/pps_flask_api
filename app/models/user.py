@@ -17,7 +17,7 @@ class User(db.Model):
     account_ID = db.Column(db.Integer, nullable=True)
     credits = db.Column(db.Integer, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
-    subscription_id = db.Column(db.Integer, nullable=False)
+    subscription_id = db.Column(db.Integer, nullable=True)
     modified_at = db.Column(db.DateTime, nullable=False)
     points = db.Column(db.Integer, nullable=True)
     
@@ -25,10 +25,8 @@ class User(db.Model):
     purchased_audios = db.relationship('Purchase', backref='buyer', lazy=True)
     uploaded_audios = db.relationship('Audio', backref='creator', lazy=True)
     favorites = db.relationship('Favorite', backref='user', lazy=True)
-    favorite_audios = db.relationship('Audio', secondary='favoritos', backref='favorited_by_users', lazy='dynamic')
 
-    def __init__(self, id, personal_ID, profile, username, email, full_name, state, phone_number,
-                 account_ID=None, credits=None, created_at=None, modified_at=None, points=None):
+    def __init__(self, id, personal_ID, profile, username, email, full_name, state, phone_number, subscription_id=None, account_ID=None, credits=None, created_at=None, modified_at=None, points=None):
         self.id = id
         self.personal_ID = personal_ID
         self.profile = profile
@@ -37,6 +35,7 @@ class User(db.Model):
         self.full_name = full_name
         self.state = state
         self.phone_number = phone_number
+        self.subscription_id = subscription_id
         self.account_ID = account_ID
         self.credits = credits
         self.created_at = created_at or datetime.datetime.now(datetime.timezone.utc)
@@ -56,6 +55,7 @@ class User(db.Model):
             "phone_number": self.phone_number,
             "account_ID": self.account_ID,
             "credits": self.credits,
+            "subscription_id": self.subscription_id,
             "created_at": self.created_at,
             "modified_at": self.modified_at,
             "points": self.points,

@@ -1,4 +1,4 @@
-from sqlalchemy import func
+import datetime
 from pps_flask_api.app import db
 
 class Purchase(db.Model):
@@ -15,3 +15,26 @@ class Purchase(db.Model):
 
     # Relaciones
     purchase_details = db.relationship('Purchase_detail', backref='purchase', lazy=True)
+
+    def __init__(self, ID, buyer_ID, flow_type, currency, payment_method, state, created_at=None, modified_at=None):
+        self.ID = ID
+        self.buyer_ID = buyer_ID
+        self.flow_type = flow_type
+        self.currency = currency
+        self.payment_method = payment_method
+        self.state = state
+        self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
+        self.modified_at = modified_at if modified_at else datetime.datetime.now(datetime.timezone.utc)
+
+    def to_dict(self):
+        return {
+            'ID': self.ID,
+            'buyer_ID': self.buyer_ID,
+            'flow_type': self.flow_type,
+            'currency': self.currency,
+            'payment_method': self.payment_method,
+            'state': self.state,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'modified_at': self.modified_at.isoformat() if self.modified_at else None
+        }
+    

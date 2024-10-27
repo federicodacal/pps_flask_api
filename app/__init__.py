@@ -2,6 +2,7 @@ from flask import Flask
 from .db import db, migrate 
 from .routes.user_routes import user_routes
 from .routes.audio_routes import audio_routes
+from .routes.purchase_routes import purchase_routes
 import logging
 import os
 
@@ -18,6 +19,7 @@ migrate.init_app(app, db)
 # Configuración de las rutas
 app.register_blueprint(user_routes)
 app.register_blueprint(audio_routes)
+app.register_blueprint(purchase_routes)
 
 # Importar modelos después de definir la app
 from pps_flask_api.app.models.user import User

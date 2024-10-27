@@ -37,6 +37,7 @@ def create_user():
         full_name=data['full_name'],
         state=data['state'],
         phone_number=data['phone_number'],
+        subscription_id=data['subscription_id'], # Puede ser opcional
         account_ID=data.get('account_ID'),  # Puede ser opcional
         credits=data.get('credits'),  # Puede ser opcional
         created_at=datetime.datetime.now(datetime.timezone.utc),
@@ -64,6 +65,7 @@ def update_user(user_id):
     user.state = data.get('state', user.state)
     user.phone_number = data.get('phone_number', user.phone_number)
     user.account_ID = data.get('account_ID', user.account_ID)
+    user.subscription_id = data.get('subscription_id', user.subscription_id)
     user.credits = data.get('credits', user.credits)
     user.points = data.get('points', user.points)
     user.modified_at = datetime.datetime.now(datetime.timezone.utc)  # Actualizar la fecha de modificación
