@@ -1,14 +1,14 @@
 {
     "builds":[
         {
-            "src": "run.py",
+            "src": "pps_flask_api/run.py",
             "use": "@vercel/python"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "run.py"
+            "dest": "pps_flask_api/run.py"
         }
     ]
 }
