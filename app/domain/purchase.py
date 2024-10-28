@@ -24,7 +24,7 @@ class Purchase:
 
     @property
     def id_buyer(self):
-        return self._file_name
+        return self._id_buyer
 
     @id_buyer.setter
     def id_buyer(self, id_buyer):
@@ -32,7 +32,7 @@ class Purchase:
 
     @property
     def checkout_flow(self):
-        return self._BPM
+        return self._checkout_flow
 
     @checkout_flow.setter
     def checkout_flow(self, checkout_flow):

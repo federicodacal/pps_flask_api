@@ -1,9 +1,9 @@
 import datetime
 from flask import Blueprint, request, jsonify
-from pps_flask_api.app.db import db  
-from pps_flask_api.app.models.purchase import Purchase 
-from pps_flask_api.app.models.purchase_detail import Purchase_detail 
-from pps_flask_api.app.models.item import Item 
+from ..db import db  
+from ..models.purchase import Purchase 
+from ..models.purchase_detail import Purchase_detail 
+from ..models.item import Item 
 
 purchase_routes = Blueprint('purchase_routes', __name__)
 

@@ -1,7 +1,7 @@
 import datetime
 from flask import Blueprint, request, jsonify
-from pps_flask_api.app.db import db  
-from pps_flask_api.app.models.user import User 
+from ..db import db  
+from ..models.user import User 
 
 user_routes = Blueprint('user_routes', __name__)
 

@@ -1,4 +1,4 @@
-from pps_flask_api.app import db
+from ..db import db
 
 class Favorite(db.Model):
     __tablename__= 'favoritos'

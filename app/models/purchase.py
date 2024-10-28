@@ -1,5 +1,5 @@
 import datetime
-from pps_flask_api.app import db
+from ..db import db
 
 class Purchase(db.Model):
     __tablename__= 'ventas'

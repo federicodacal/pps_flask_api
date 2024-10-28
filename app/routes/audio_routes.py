@@ -1,7 +1,7 @@
 import datetime
 from flask import Blueprint, request, jsonify
-from pps_flask_api.app.db import db  
-from pps_flask_api.app.models.audio import Audio 
+from ..db import db  
+from ..models.audio import Audio 
 
 audio_routes = Blueprint('audio_routes', __name__)
 

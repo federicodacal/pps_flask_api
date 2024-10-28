@@ -12,6 +12,6 @@
         }
     ],
     "env": {
-        "PYTHONPATH": "pps_flask_api"
+        "PYTHONPATH": "."
     }
 }

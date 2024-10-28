@@ -1,6 +1,6 @@
 import datetime
 from sqlalchemy import func
-from pps_flask_api.app import db
+from ..db import db
 
 class Audio(db.Model):
     __tablename__= 'audios'
