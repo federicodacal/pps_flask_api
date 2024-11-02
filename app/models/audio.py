@@ -6,7 +6,7 @@ class Audio(db.Model):
     __tablename__= 'audios'
 
     ID = db.Column(db.String(50), primary_key=True)
-    creator_ID = db.Column(db.String(50), db.ForeignKey('usuarios.id'), nullable=False)
+    creator_ID = db.Column(db.String(50), db.ForeignKey('creators.ID'), nullable=False)
     file_name = db.Column(db.String(100), nullable=False)
     audio_name = db.Column(db.String(50), nullable=False)
     state = db.Column(db.String(50), nullable=False)

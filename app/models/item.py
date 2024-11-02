@@ -6,7 +6,7 @@ class Item(db.Model):
     
     ID = db.Column(db.String(50), primary_key=True)
     audio_ID = db.Column(db.String(50), db.ForeignKey('audios.ID'), nullable=False)
-    creator_ID = db.Column(db.String(50), db.ForeignKey('usuarios.id'), nullable=False)
+    creator_ID = db.Column(db.String(50), db.ForeignKey('users.ID'), nullable=False)
     price = db.Column(db.Integer, nullable=False)
     state = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)

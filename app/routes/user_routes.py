@@ -1,20 +1,20 @@
 import datetime
 from flask import Blueprint, request, jsonify
 from ..db import db  
-from ..models.user import User 
+from ..models.user_detail import User_detail 
 
 user_routes = Blueprint('user_routes', __name__)
 
 # GET ALL
 @user_routes.route('/users')
 def get_users():
-    users = User.query.all()
+    users = User_detail.query.all()
     return jsonify([user.to_dict() for user in users]), 200
 
 # GET BY ID
 @user_routes.route('/users/<string:user_id>', methods=['GET'])
 def get_user(user_id):
-    user = User.query.get(user_id) 
+    user = User_detail.query.get(user_id) 
     if user is None:
         return {"error": "Usuario no encontrado"}, 404
     return jsonify(user.to_dict()), 200
@@ -28,8 +28,8 @@ def create_user():
     if not data:
         return {"error": "Ocurrió un problema"}, 400
 
-    new_user = User(
-        id=data['id'],
+    new_user = User_detail(
+        ID=data['ID'],
         personal_ID=data['personal_ID'],
         profile=data['profile'],
         username=data['username'],
@@ -51,7 +51,7 @@ def create_user():
 # UPDATE
 @user_routes.route('/users/<string:user_id>', methods=['PUT'])
 def update_user(user_id):
-    user = User.query.get(user_id)
+    user = User_detail.query.get(user_id)
     if user is None:
         return {"error": "Usuario no encontrado"}, 404
 
@@ -76,7 +76,7 @@ def update_user(user_id):
 # DELETE
 @user_routes.route('/users/<string:user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    user = User.query.get(user_id)
+    user = User_detail.query.get(user_id)
     if user is None:
         return {"error": "Usuario no encontrado"}, 404
 

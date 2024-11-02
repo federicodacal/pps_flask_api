@@ -9,7 +9,7 @@ import logging
 app = Flask(__name__)
 
 # Configuración de la app
-app.config.from_object('config.Config')
+app.config.from_object('pps_flask_api.config.Config')
 
 # Inicializar db y migrate con la app
 db.init_app(app)
@@ -21,7 +21,10 @@ app.register_blueprint(audio_routes)
 app.register_blueprint(purchase_routes)
 
 # Importar modelos después de definir la app
+from .models.user_detail import User_detail
 from .models.user import User
+from .models.creator import Creator
+from .models.billing_account import Billing_account
 from .models.audio import Audio
 from .models.favorites import Favorite
 from .models.purchase_detail import Purchase_detail

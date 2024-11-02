@@ -3,10 +3,10 @@ from sqlalchemy import func
 from ..db import db
 
 class Purchase_detail(db.Model):
-    __tablename__= 'detalles_ventas'
+    __tablename__= 'purchases_details'
 
     ID = db.Column(db.String(50), primary_key=True)
-    purchase_ID = db.Column(db.String(50), db.ForeignKey('ventas.ID'), nullable=True)
+    purchase_ID = db.Column(db.String(50), db.ForeignKey('purchases.ID'), nullable=True)
     item_ID = db.Column(db.String(50), db.ForeignKey('items.ID'), nullable=False)
     state = db.Column(db.String(50), nullable=False)
     created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)

@@ -2,10 +2,10 @@ import datetime
 from ..db import db
 
 class Purchase(db.Model):
-    __tablename__= 'ventas'
+    __tablename__= 'purchases'
 
     ID = db.Column(db.String(50), primary_key=True)
-    buyer_ID = db.Column(db.String(50), db.ForeignKey('usuarios.id'), nullable=False)
+    buyer_ID = db.Column(db.String(50), db.ForeignKey('users.ID'), nullable=False)
     flow_type = db.Column(db.String(50), nullable=False)
     currency = db.Column(db.String(50), nullable=False)
     payment_method = db.Column(db.String(50), nullable=False)
