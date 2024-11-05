@@ -21,15 +21,15 @@ app.register_blueprint(audio_routes)
 app.register_blueprint(purchase_routes)
 
 # Importar modelos después de definir la app
-from .models.user_detail import User_detail
 from .models.user import User
-from .models.creator import Creator
-from .models.billing_account import Billing_account
-from .models.audio import Audio
-from .models.favorites import Favorite
+from .models.user_detail import User_detail
+from .models.purchase import Purchase
 from .models.purchase_detail import Purchase_detail
 from .models.item import Item
-from .models.purchase import Purchase
+from .models.favorites import Favorite
+from .models.creator import Creator
+from .models.audio import Audio
+from .models.account import Account
  
 # Configuración del logging
 if not app.debug:

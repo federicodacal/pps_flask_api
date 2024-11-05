@@ -16,7 +16,7 @@ class Audio(db.Model):
     tone = db.Column(db.Integer, nullable=False)
     length = db.Column(db.Integer, nullable=False)
     size = db.Column(db.Integer, nullable=False)
-    score = db.Column(db.Integer, nullable=False)
+    score = db.Column(db.Integer, nullable=False, default=0)
     description = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     modified_at = db.Column(db.DateTime, nullable=False)
@@ -34,8 +34,8 @@ class Audio(db.Model):
         self.tone = tone
         self.length = length
         self.size = size
-        self.description = description
         self.score = score
+        self.description = description
         self.created_at = created_at or datetime.datetime.now(datetime.timezone.utc)
         self.modified_at = modified_at or datetime.datetime.now(datetime.timezone.utc)
 
@@ -53,8 +53,8 @@ class Audio(db.Model):
             "tone": self.tone,
             "length": self.length,
             "size": self.size,
-            "score": self.score,
             "description": self.description,
+            "score": self.score,
             "created_at": self.created_at,
             "modified_at": self.modified_at,
         }
