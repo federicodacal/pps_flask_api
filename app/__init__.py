@@ -1,4 +1,6 @@
 from flask import Flask
+from flask_cors import CORS
+from .mongodb import init_gridfs
 from .db import db, migrate 
 from .routes.user_routes import user_routes
 from .routes.audio_routes import audio_routes
@@ -8,6 +10,9 @@ import logging
 # Crear una instancia de Flask
 app = Flask(__name__)
 
+# CORS
+CORS(app)
+
 # Configuración de la app
 app.config.from_object('pps_flask_api.config.Config')
 
@@ -15,6 +20,9 @@ app.config.from_object('pps_flask_api.config.Config')
 db.init_app(app)
 migrate.init_app(app, db)
 
+# Inicializar GridFS
+init_gridfs(app)
+    
 # Configuración de las rutas
 app.register_blueprint(user_routes)
 app.register_blueprint(audio_routes)
@@ -38,4 +46,4 @@ if not app.debug:
     app.logger.addHandler(stream_handler)
 
 app.logger.setLevel(logging.INFO)
-app.logger.info('Flask App startup')
+app.logger.info(f'Flask App startup!')
