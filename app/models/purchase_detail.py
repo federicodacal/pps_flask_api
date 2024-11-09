@@ -1,6 +1,6 @@
 import datetime
 from sqlalchemy import func
-from ..db import db
+from ..databases.db import db
 
 class Purchase_detail(db.Model):
     __tablename__= 'purchases_details'

@@ -1,6 +1,6 @@
 import datetime
 from sqlalchemy import func
-from ..db import db
+from ..databases.db import db
 
 class Item(db.Model):
     __tablename__= 'items'

@@ -1,5 +1,5 @@
 import datetime
-from ..db import db
+from ..databases.db import db
 
 class Purchase(db.Model):
     __tablename__= 'purchases'

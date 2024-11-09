@@ -1,8 +1,8 @@
 import datetime
 from flask import Blueprint, Response, request, jsonify, current_app
-from ..db import db  
+from ..databases.db import db  
 from ..models.audio import Audio 
-from ..mongodb import init_gridfs
+from ..databases.mongodb import init_gridfs
 from bson import ObjectId
 
 audio_routes = Blueprint('audio_routes', __name__)

@@ -1,7 +1,7 @@
 import datetime
 
 from sqlalchemy import func
-from ..db import db
+from ..databases.db import db
 
 class User(db.Model):
     __tablename__= 'users'
@@ -15,8 +15,11 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     modified_at = db.Column(db.DateTime, nullable=False)
 
+    # Relaciones
     purchased_audios = db.relationship('Purchase', backref='buyer', lazy=True)
     favorites = db.relationship('Favorite', backref='user', lazy=True)
+    user_detail = db.relationship("User_detail", backref="user", lazy="joined")
+    creator = db.relationship("Creator", backref="user", uselist=False)
 
     def __init__(self, ID, user_detail_ID, email, pwd, type, state, created_at=None, modified_at=None):
         self.ID = ID

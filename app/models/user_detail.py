@@ -1,6 +1,6 @@
 import datetime
 
-from ..db import db
+from ..databases.db import db
 
 class User_detail(db.Model):
     __tablename__= 'users_details'

@@ -1,6 +1,6 @@
 import datetime
 from flask import Blueprint, request, jsonify
-from ..db import db  
+from ..databases.db import db  
 from ..models.purchase import Purchase 
 from ..models.purchase_detail import Purchase_detail 
 from ..models.item import Item 

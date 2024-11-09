@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from .mongodb import init_gridfs
-from .db import db, migrate 
+from .databases.mongodb import init_gridfs
+from .databases.db import db, migrate 
 from .routes.user_routes import user_routes
 from .routes.audio_routes import audio_routes
 from .routes.purchase_routes import purchase_routes

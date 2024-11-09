@@ -1,4 +1,4 @@
-from ..db import db
+from ..databases.db import db
 
 class Favorite(db.Model):
     __tablename__= 'favorites'

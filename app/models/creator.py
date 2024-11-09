@@ -1,7 +1,7 @@
 import datetime
 
 from sqlalchemy import func
-from ..db import db
+from ..databases.db import db
 
 class Creator(db.Model):
     __tablename__= 'creators'
@@ -20,14 +20,13 @@ class Creator(db.Model):
     uploaded_audios = db.relationship('Audio', backref='creator', lazy=True)
     account = db.relationship('Account', back_populates='creator', uselist=False)
 
-    def __init__(self, ID, user_ID, profile, points, credits, state, account_ID, subscription_ID, created_at=None, modified_at=None):
+    def __init__(self, ID, user_ID, profile, points, credits, state, subscription_ID, created_at=None, modified_at=None):
         self.ID = ID
         self.user_ID = user_ID
         self.profile = profile
         self.points = points
         self.credits = credits
         self.state = state
-        self.account_ID = account_ID
         self.subscription_ID = subscription_ID
         self.created_at = created_at or datetime.datetime.now(datetime.timezone.utc)
         self.modified_at = modified_at or datetime.datetime.now(datetime.timezone.utc)
@@ -41,7 +40,6 @@ class Creator(db.Model):
             "points": self.points,
             "credits": self.credits,
             "state": self.state,
-            "account_ID": self.account_ID,
             "subscription_ID": self.subscription_ID,
             "created_at": self.created_at,
             "modified_at": self.modified_at,
