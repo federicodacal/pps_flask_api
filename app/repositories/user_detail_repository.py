@@ -16,7 +16,6 @@ class UserDetailRepository:
             modified_at=datetime.datetime.now(datetime.timezone.utc),
         )
         db.session.add(new_user_detail)
-        db.session.commit()
         return new_user_detail
     
     @staticmethod
@@ -31,6 +30,5 @@ class UserDetailRepository:
         user_detail.full_name = data.get('full_name', user_detail.full_name)
         user_detail.phone_number = data.get('phone_number', user_detail.phone_number)
         user_detail.modified_at = datetime.datetime.now(datetime.timezone.utc)
-  
-        db.session.commit()
+
         return user_detail

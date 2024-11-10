@@ -1,5 +1,3 @@
-from ..models.creator import Creator
-from ..models.user_detail import User_detail
 from ..repositories.user_repository import UserRepository
 from ..repositories.user_detail_repository import UserDetailRepository
 from ..repositories.creator_repository import CreatorRepository
@@ -30,6 +28,7 @@ class UserService:
         
         user_data = user.to_dict()
         user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
+        user_data["creator"] = user.creator.to_dict() if user.creator else None
         
         return user_data
 
@@ -39,19 +38,25 @@ class UserService:
             raise ValueError("Los datos proporcionados están vacíos.")
         
         try:
-            new_user_detail = UserDetailRepository.create_user_detail(data)
-            new_user = UserRepository.create_user(data)
-            new_creator = None
 
-            if data.get('type') == 'creator':
-                new_creator = CreatorRepository.create_creator(data)
+            with db.session.begin():
+
+                new_user_detail = UserDetailRepository.create_user_detail(data)
+                new_user = UserRepository.create_user(data)
+                new_creator = None
+                new_account = None
+
+                if data.get('type') == 'creator':
+                    new_creator = CreatorRepository.create_creator(data)
+                    new_account = AccountRepository.create_account(data)
 
             db.session.commit()
 
             return {
-                "user_detail": new_user_detail.to_dict(),
                 "user": new_user.to_dict(),
+                "user_detail": new_user_detail.to_dict(),
                 "creator": new_creator.to_dict() if new_creator else None,
+                "account": new_account.to_dict() if new_account else None
             }
         
         except Exception as e:
@@ -70,24 +75,32 @@ class UserService:
             raise ValueError("Usuario no encontrado")
 
         try:
+
+            #with db.session.begin():
+
             updated_user_detail = UserDetailRepository.update_user_detail(user.user_detail_ID, data)
             updated_user = UserRepository.update_user(user.ID, data)
             updated_creator = None
+            updated_account = None
 
             if data.get('type') == 'creator':
                 creator = CreatorRepository.get_creator_by_user_id(user.ID)
 
                 if creator:
                     updated_creator = CreatorRepository.update_creator(creator.ID, data)
+                    updated_account = AccountRepository.update_account(creator.ID, data)
+
                 else:
                     updated_creator = CreatorRepository.create_creator(data)
+                    updated_account = AccountRepository.create_account(data)
             
             db.session.commit()
             
             return {
-                "user_detail": updated_user_detail.to_dict() if updated_user_detail else None,
                 "user": updated_user.to_dict() if updated_user else None,
+                "user_detail": updated_user_detail.to_dict() if updated_user_detail else None,
                 "creator": updated_creator.to_dict() if updated_creator else None,
+                "account": updated_account.to_dict() if updated_account else None
             }
         
         except Exception as e:

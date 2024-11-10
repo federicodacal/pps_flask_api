@@ -5,6 +5,7 @@ from .databases.db import db, migrate
 from .routes.user_routes import user_routes
 from .routes.audio_routes import audio_routes
 from .routes.purchase_routes import purchase_routes
+from .routes.auth_routes import auth_routes
 import logging
 
 # Crear una instancia de Flask
@@ -27,6 +28,7 @@ init_gridfs(app)
 app.register_blueprint(user_routes)
 app.register_blueprint(audio_routes)
 app.register_blueprint(purchase_routes)
+app.register_blueprint(auth_routes)
 
 # Importar modelos después de definir la app
 from .models.user import User

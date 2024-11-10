@@ -31,7 +31,6 @@ class UserRepository:
             modified_at=datetime.datetime.now(datetime.timezone.utc),
         )
         db.session.add(new_user)
-        db.session.commit()
         return new_user
     
     @staticmethod
@@ -45,5 +44,5 @@ class UserRepository:
         user.type = data.get('type', user.type)
         user.state = data.get('state', user.state)
         user.modified_at = datetime.datetime.now(datetime.timezone.utc)
-
+        
         return user
