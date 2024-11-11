@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Configuración de la app
-app.config.from_object('pps_flask_api.config.Config')
+app.config.from_object('config.Config')
 
 # Inicializar db y migrate con la app
 db.init_app(app)

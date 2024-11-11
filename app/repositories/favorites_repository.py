@@ -1,4 +1,4 @@
-from pps_flask_api.app.models.audio import Audio
+from ..models.audio import Audio
 from ..databases.db import db
 from ..models.favorites import Favorite
 
