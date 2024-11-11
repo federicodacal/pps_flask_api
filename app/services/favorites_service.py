@@ -1,16 +1,19 @@
+from ..services.config_service import ConfigService
 from ..repositories.favorites_repository import FavoritesRepository
 
 class FavoriteService:
 
     @staticmethod
     def get_favorites(user_id):
-        favorites = FavoritesRepository.get_favorites_by_user(user_id)
+        favorites = FavoritesRepository.get_favorites_by_user_with_audios(user_id)
         
         result = []
         for favorite in favorites:
             favorite_data = favorite.to_dict()  
             
             favorite_data["audio"] = favorite.audio.to_dict() if favorite.audio else None
+            favorite_data["audio"]["file_url"] = f"{ConfigService.current_url}/audios/file/{favorite.audio.file_name}" if favorite.audio.file_name else None
+
             result.append(favorite_data)
 
         return result

@@ -5,7 +5,7 @@ from ..models.favorites import Favorite
 class FavoritesRepository:
 
     @staticmethod
-    def get_favorites_by_user(user_id):
+    def get_favorites_by_user_with_audios(user_id):
         return Favorite.query.filter_by(user_ID=user_id).join(Audio).all()
     
     @staticmethod

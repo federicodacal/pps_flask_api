@@ -1,6 +1,7 @@
 from flask import current_app, Response
 from ..repositories.audio_repository import AudioRepository
 from ..repositories.item_repository import ItemRepository
+from ..services.config_service import ConfigService
 from ..databases.db import db
 from ..databases.mongodb import init_gridfs
 from bson import ObjectId
@@ -17,7 +18,7 @@ class AudioService:
             audio_file = AudioService.get_audio_file_from_gridfs(audio.file_name)
 
             audio_data["item"] = audio.item.to_dict() if audio.item else None
-            audio_data["file_url"] = f"http://localhost:5000/audios/file/{audio.file_name}" if audio_file else None
+            audio_data["file_url"] = f"{ConfigService.current_url}/audios/file/{audio.file_name}" if audio_file else None
 
             result.append(audio_data)
 
