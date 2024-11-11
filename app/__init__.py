@@ -4,6 +4,7 @@ from .databases.mongodb import init_gridfs
 from .databases.db import db, migrate 
 from .routes.user_routes import user_routes
 from .routes.audio_routes import audio_routes
+from .routes.favorites_routes import favorites_routes
 from .routes.purchase_routes import purchase_routes
 from .routes.auth_routes import auth_routes
 import logging
@@ -27,6 +28,7 @@ init_gridfs(app)
 # Configuración de las rutas
 app.register_blueprint(user_routes)
 app.register_blueprint(audio_routes)
+app.register_blueprint(favorites_routes)
 app.register_blueprint(purchase_routes)
 app.register_blueprint(auth_routes)
 

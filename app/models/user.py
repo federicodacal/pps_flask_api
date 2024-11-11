@@ -17,7 +17,7 @@ class User(db.Model):
 
     # Relaciones
     purchased_audios = db.relationship('Purchase', backref='buyer', lazy=True)
-    favorites = db.relationship('Favorite', backref='user', lazy=True)
+    favorites = db.relationship('Favorite', back_populates='user')
     user_detail = db.relationship("User_detail", backref="user", lazy="joined")
     creator = db.relationship("Creator", backref="user", uselist=False)
 
