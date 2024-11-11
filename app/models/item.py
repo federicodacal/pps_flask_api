@@ -14,7 +14,7 @@ class Item(db.Model):
     modified_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
     # Relaciones 
-    purchase_details = db.relationship('Purchase_detail', backref='item', lazy=True)
+    purchase_detail = db.relationship('Purchase_detail', backref='item', lazy=True)
 
     def __init__(self, ID, creator_ID, audio_ID, price, state, created_at=None, modified_at=None):
         self.ID = ID

@@ -20,6 +20,9 @@ class Audio(db.Model):
     description = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False)
     modified_at = db.Column(db.DateTime, nullable=False)
+    
+    # Relaciones
+    item = db.relationship('Item', backref='audio', uselist=False)
 
     def __init__(self, ID, creator_ID, file_name, audio_name, state, category, genre, BPM,
                  tone, length, size, description, score=None, created_at=None, modified_at=None):

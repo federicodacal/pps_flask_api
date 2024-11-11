@@ -76,8 +76,6 @@ class UserService:
 
         try:
 
-            #with db.session.begin():
-
             updated_user_detail = UserDetailRepository.update_user_detail(user.user_detail_ID, data)
             updated_user = UserRepository.update_user(user.ID, data)
             updated_creator = None
