@@ -25,3 +25,22 @@ class ItemRepository:
         )
         db.session.add(new_audio)
         return new_audio
+    
+    @staticmethod
+    def update_item(ID, data):
+        item = Item.query.get(ID)
+
+        if not item:
+            return None
+
+        item.price = data.get('price', item.price)
+        item.state = data.get('state_item', item.state)
+        item.modified_at = datetime.datetime.now(datetime.timezone.utc)
+        
+        return item
+    
+    @staticmethod
+    def delete_item(item_id):
+        item = Item.query.get(item_id)
+        if item:
+            db.session.delete(item)

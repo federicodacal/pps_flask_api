@@ -25,6 +25,11 @@ class AudioController:
         return Response(audio_file.read(),
                     mimetype='audio/mpeg',  
                     headers={"Content-Disposition": f"attachment;filename={audio_file.filename}"})
+    
+    @staticmethod
+    def get_audios_by_creator(creator_id):
+        audios = AudioService.get_audios_by_creator(creator_id)
+        return jsonify(audios), 200
 
     @staticmethod
     def create_audio():
@@ -57,4 +62,24 @@ class AudioController:
     
     @staticmethod
     def update_audio(audio_id):
-        return 'Update audio'
+        data = request.json or {}
+        
+        try:
+            updated_audio = AudioService.update_audio(audio_id, data)
+            if not updated_audio["audio"]:
+                return {"error": "Audio no encontrado"}, 404
+            return jsonify(updated_audio), 200
+        except ValueError as ve:
+            return {"error": str(ve)}, 400
+        except RuntimeError as re:
+            return {"error": str(re)}, 500
+    
+    @staticmethod
+    def delete_audio(audio_id):
+        try:
+            result = AudioService.delete_audio(audio_id)
+            return jsonify(result), 200
+        except ValueError as ve:
+            return {"error": str(ve)}, 404
+        except RuntimeError as re:
+            return {"error": str(re)}, 500

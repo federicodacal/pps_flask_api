@@ -17,7 +17,6 @@ class Creator(db.Model):
     modified_at = db.Column(db.DateTime, nullable=False)
 
     # Relaciones
-    uploaded_audios = db.relationship('Audio', backref='creator', lazy=True)
     account = db.relationship('Account', back_populates='creator', uselist=False)
 
     def __init__(self, ID, user_ID, profile, points, credits, state, subscription_ID, created_at=None, modified_at=None):

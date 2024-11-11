@@ -23,6 +23,7 @@ class Audio(db.Model):
     
     # Relaciones
     item = db.relationship('Item', backref='audio', uselist=False)
+    creator = db.relationship('Creator', backref='creator', uselist=False)
 
     def __init__(self, ID, creator_ID, file_name, audio_name, state, category, genre, BPM,
                  tone, length, size, description, score=None, created_at=None, modified_at=None):
