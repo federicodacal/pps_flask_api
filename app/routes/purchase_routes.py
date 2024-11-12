@@ -1,12 +1,13 @@
-import datetime
-from flask import Blueprint, request, jsonify
-from ..databases.db import db  
-from ..models.purchase import Purchase 
-from ..models.purchase_detail import Purchase_detail 
-from ..models.item import Item 
+from flask import Blueprint
+from ..controllers.purchase_controller import PurchaseController
 
 purchase_routes = Blueprint('purchase_routes', __name__)
 
+purchase_routes.route('/purchases', methods=["GET"])(PurchaseController.get_purchases)
+purchase_routes.route('/purchases', methods=["POST"])(PurchaseController.create_purchase)
+purchase_routes.route('/purchases/<string:user_id>', methods=["GET"])(PurchaseController.get_purchases_by_user)
+
+'''
 # GET ALL
 @purchase_routes.route('/purchases')
 def get_purchases():
@@ -44,3 +45,4 @@ def update_purchase(purchase_id):
 @purchase_routes.route('/purchases/<string:purchase_id>', methods=['DELETE'])
 def delete_purchase(purchase_id):
     return 'Delete Purchase'
+'''

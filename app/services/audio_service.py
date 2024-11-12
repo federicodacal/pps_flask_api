@@ -35,7 +35,7 @@ class AudioService:
         audio_file = AudioService.get_audio_file_from_gridfs(audio.file_name)
 
         audio_data["item"] = audio.item.to_dict() if audio.item else None
-        audio_data["file_url"] = f"http://localhost:5000/audios/file/{audio.file_name}" if audio_file else None
+        audio_data["file_url"] = f"{ConfigService.current_url}/audios/file/{audio.file_name}" if audio_file else None
 
         return audio_data
     
