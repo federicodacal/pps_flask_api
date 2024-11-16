@@ -1,11 +1,12 @@
 import datetime
+import uuid
 from sqlalchemy import func
 from ..databases.db import db
 
 class Item(db.Model):
     __tablename__= 'items'
     
-    ID = db.Column(db.String(50), primary_key=True)
+    ID = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     creator_ID = db.Column(db.String(50), db.ForeignKey('creators.ID'), nullable=False)
     audio_ID = db.Column(db.String(50), db.ForeignKey('audios.ID'), nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -14,10 +15,11 @@ class Item(db.Model):
     modified_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
     # Relaciones 
-    purchase_detail = db.relationship('Purchase_detail', backref='item', lazy=True)
+    audio = db.relationship('Audio', back_populates='item', uselist=False)
+    purchase_details = db.relationship('Purchase_detail', back_populates='item', lazy=True)
 
-    def __init__(self, ID, creator_ID, audio_ID, price, state, created_at=None, modified_at=None):
-        self.ID = ID
+    def __init__(self, creator_ID, audio_ID, price, state, created_at=None, modified_at=None, ID=None):
+        self.ID = ID if ID is not None else str(uuid.uuid4())
         self.creator_ID = creator_ID
         self.audio_ID = audio_ID
         self.price = price

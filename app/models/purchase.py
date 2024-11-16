@@ -1,10 +1,11 @@
 import datetime
+import uuid
 from ..databases.db import db
 
 class Purchase(db.Model):
     __tablename__= 'purchases'
 
-    ID = db.Column(db.String(50), primary_key=True)
+    ID = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     buyer_ID = db.Column(db.String(50), db.ForeignKey('users.ID'), nullable=False)
     flow_type = db.Column(db.String(50), nullable=False)
     payment_method = db.Column(db.String(50), nullable=False)
@@ -15,8 +16,8 @@ class Purchase(db.Model):
     # Relaciones
     purchase_details = db.relationship('Purchase_detail', backref='purchase', lazy=True)
 
-    def __init__(self, ID, buyer_ID, flow_type, payment_method, state, created_at=None, modified_at=None):
-        self.ID = ID
+    def __init__(self, buyer_ID, flow_type, payment_method, state, created_at=None, modified_at=None, ID=None):
+        self.ID = ID if ID is not None else str(uuid.uuid4())
         self.buyer_ID = buyer_ID
         self.flow_type = flow_type
         self.payment_method = payment_method

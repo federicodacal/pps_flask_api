@@ -15,11 +15,10 @@ class ItemRepository:
     @staticmethod
     def create_item(data, audio_id):
         new_audio = Item(
-            ID=data['item_ID'],
             creator_ID=data['creator_ID'],
             audio_ID=audio_id,
             price=data['price'],
-            state=data['state_item'],
+            state="creado",
             created_at=datetime.datetime.now(datetime.timezone.utc),
             modified_at=datetime.datetime.now(datetime.timezone.utc)
         )

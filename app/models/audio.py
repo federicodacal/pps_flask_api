@@ -22,7 +22,7 @@ class Audio(db.Model):
     modified_at = db.Column(db.DateTime, nullable=False)
     
     # Relaciones
-    item = db.relationship('Item', backref='audio', uselist=False)
+    item = db.relationship('Item', back_populates='audio', uselist=False)
     creator = db.relationship('Creator', backref='creator', uselist=False)
     favorites = db.relationship('Favorite', back_populates='audio')
 
