@@ -12,3 +12,8 @@ class AuthController:
     def logout():
         response = AuthService.logout()
         return jsonify(response), 200
+    
+    @staticmethod
+    def register():
+        response = AuthService.register()
+        return jsonify(response), 200

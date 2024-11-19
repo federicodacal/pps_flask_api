@@ -17,8 +17,8 @@ class UserController:
     @staticmethod
     def create_user():
         data = request.json or {}
-        user_data, status_code = UserService.create_user(data)
-        return jsonify(user_data), status_code
+        response, status_code = UserService.create_user(data)
+        return jsonify(response), status_code
 
     @staticmethod
     def update_user(user_id):

@@ -55,6 +55,10 @@ def validate_user(data, action="create"):
     if not valid:
         return False, message
     
+    valid, message = validate_non_blank_fields(data)
+    if not valid:
+        return False, message
+    
     if action == "create":
         valid, message = validate_email(data.get("email"))
         if not valid:
@@ -79,6 +83,10 @@ def validate_creator(data):
     required_fields = ["creator_ID", "profile", "subscription_ID", "account_ID", "personal_account_ID","account_type"]
 
     valid, message = validate_required_fields(data, required_fields)
+    if not valid:
+        return False, message
+    
+    valid, message = validate_non_blank_fields(data)
     if not valid:
         return False, message
     
@@ -127,5 +135,29 @@ def validate_audio(data, file, action="create"):
         valid, message = validate_audio_file(file)
         if not valid:
             return False, message
+    
+    return True, ""
+
+def validate_purchase(data):
+    required_fields = ["buyer_ID", "flow_type", "payment_method", "items"]
+
+    valid, message = validate_required_fields(data, required_fields)
+    if not valid:
+        return False, message
+    
+    valid, message = validate_non_blank_fields(data)
+    if not valid:
+        return False, message
+
+    for item in data.get("items", []):
+        item_required_fields = ["item_ID", "audio_ID", "creator_ID", "price"]
+        
+        valid, message = validate_required_fields(item, item_required_fields)
+        if not valid:
+            return False, message
+        
+        valid, message = validate_non_blank_fields(item)
+        if not valid:
+            return False, message    
     
     return True, ""

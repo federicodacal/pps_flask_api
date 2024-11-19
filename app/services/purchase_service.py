@@ -5,6 +5,8 @@ from ..databases.db import db
 from ..repositories.purchase_repository import PurchaseRepository
 from ..repositories.purchase_detail_repository import PurchaseDetailRepository
 from ..repositories.item_repository import ItemRepository
+from ..utils.validators import validate_purchase
+from ..middlewares.api_exception import APIException
 
 class PurchaseService:
 
@@ -25,23 +27,24 @@ class PurchaseService:
             
             result.append(purchase_data)
         
-        return result
+        return result, 200
     
     @staticmethod
     def create_purchase(data):
-        if not data:
-            raise ValueError("Los datos proporcionados están vacíos")
-        
-        purchase_id = data.get("purchase_ID")
-        buyer_id = data.get("buyer_ID")
-        flow_type = data.get("flow_type")
-        payment_method = data.get("payment_method")
-        items = data.get("items", [])
-
-        if not buyer_id or not flow_type or not payment_method or not items:
-            raise ValueError("Faltan datos")
-        
         try: 
+            if not data:
+                return {"message": "Los datos proporcionados están vacíos"}, 400
+            
+            validation, msg = validate_purchase(data)
+            if not validation:
+                return {"message":msg}, 400
+            
+            purchase_id = data.get("purchase_ID")
+            buyer_id = data.get("buyer_ID")
+            flow_type = data.get("flow_type")
+            payment_method = data.get("payment_method")
+            items = data.get("items", [])            
+
             with db.session.begin():
 
                 purchase = PurchaseRepository.create_purchase(purchase_id, buyer_id, flow_type, payment_method)
@@ -50,37 +53,40 @@ class PurchaseService:
                     audio_id = item_data.get("audio_ID")
                     creator_id = item_data.get("creator_ID")
                     item_id = item_data.get("item_ID")
-                    price = item_data.get("price")
+                    #price = item_data.get("price")
 
-                    if not audio_id or not creator_id or not item_id or not price:
-                        raise ValueError("Cada ítem incluir audio_ID, creator_ID y price")
+                    #if not audio_id or not creator_id or not item_id or not price:
+                    #    raise ValueError("Cada ítem incluir item_ID, audio_ID, creator_ID y price")
                     
                     audio = AudioRepository.get_audio_by_id_with_item(audio_id)
                     if not audio:
-                        raise ValueError(f"El audio con ID {audio_id} no existe")
+                        raise APIException(f"El audio con ID {audio_id} no existe", status_code=404, error_type="Value Error")
                 
                     if audio.creator_ID != creator_id:
-                        raise ValueError(f"El audio con ID {audio_id} no pertenece al creador con ID {creator_id}")
+                        raise APIException(f"El audio con ID {audio_id} no pertenece al creador con ID {creator_id}", status_code=400, error_type="Integrity Error")
                     
-                    if audio_id != item_data["audio_ID"]:
-                        raise ValueError(f"El audio con ID {audio_id} no corresponde al item con ID {item_id}")
+                    if audio.item.ID != item_id:
+                        raise APIException(f"El audio con ID {audio_id} no corresponde al item con ID {item_id}", status_code=400, error_type="Integrity Error")
 
                     PurchaseDetailRepository.create_purchase_detail(purchase.ID, item_id)
 
             db.session.commit()
 
-            return {"purchase_id": purchase.ID}
+            return {"purchase_id": purchase.ID}, 200
         
+        except APIException as aex:
+            db.session.rollback()
+            return {"message": str(aex), "error_type": aex.error_type}, aex.status_code
         except Exception as e:
             db.session.rollback()
-            raise RuntimeError(f"Ocurrió un error al crear la compra: {str(e)}: {e.args}")
+            return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
     
     @staticmethod
     def get_purchases_by_user_id(user_id):
         purchases = PurchaseRepository.get_purchases_with_details_and_audios_by_user_id(user_id)
 
         if not purchases:
-            raise ValueError(f"No se encontraron compras para el usuario: {user_id}")
+            return {"message": f"No se encontraron compras para el usuario: {user_id}"}, 404
         
         result = []
         for purchase in purchases: 
@@ -114,4 +120,4 @@ class PurchaseService:
 
             result.append(purchase_data)
         
-        return result
+        return result, 200
