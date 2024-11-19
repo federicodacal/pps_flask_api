@@ -19,13 +19,13 @@ class Creator(db.Model):
     # Relaciones
     account = db.relationship('Account', back_populates='creator', uselist=False)
 
-    def __init__(self, ID, user_ID, profile, points, credits, state, subscription_ID, created_at=None, modified_at=None):
+    def __init__(self, ID, user_ID, profile, state, subscription_ID, points=None, credits=None, created_at=None, modified_at=None):
         self.ID = ID
         self.user_ID = user_ID
         self.profile = profile
-        self.points = points
-        self.credits = credits
         self.state = state
+        self.points = points if points is not None else 0
+        self.credits = credits if credits is not None else 0
         self.subscription_ID = subscription_ID
         self.created_at = created_at or datetime.datetime.now(datetime.timezone.utc)
         self.modified_at = modified_at or datetime.datetime.now(datetime.timezone.utc)

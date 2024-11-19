@@ -31,7 +31,7 @@ class ItemRepository:
 
         if not item:
             return None
-
+        
         item.price = data.get('price', item.price)
         item.state = data.get('state_item', item.state)
         item.modified_at = datetime.datetime.now(datetime.timezone.utc)

@@ -16,7 +16,6 @@ class FavoritesRepository:
     def add_favorite(user_id, audio_id):
         favorite = Favorite(user_ID=user_id, audio_ID=audio_id)
         db.session.add(favorite)
-        db.session.commit()
         return favorite
     
     @staticmethod
@@ -24,6 +23,5 @@ class FavoritesRepository:
         favorite = Favorite.query.filter_by(user_ID=user_id, audio_ID=audio_id).first()
         if favorite:
             db.session.delete(favorite)
-            db.session.commit()
             return True
         return False

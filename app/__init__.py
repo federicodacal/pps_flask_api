@@ -7,6 +7,7 @@ from .routes.audio_routes import audio_routes
 from .routes.favorites_routes import favorites_routes
 from .routes.purchase_routes import purchase_routes
 from .routes.auth_routes import auth_routes
+from .middlewares.api_exception import APIException, handle_api_exceptions, handle_general_exceptions
 import logging
 
 # Crear una instancia de Flask
@@ -24,8 +25,12 @@ migrate.init_app(app, db)
 
 # Inicializar GridFS
 init_gridfs(app)
-    
-# Configuración de las rutas
+
+# Registrar middleware de manejo de excepciones
+app.register_error_handler(APIException, handle_api_exceptions)
+app.register_error_handler(Exception, handle_general_exceptions)
+
+# Registrar las rutas
 app.register_blueprint(user_routes)
 app.register_blueprint(audio_routes)
 app.register_blueprint(favorites_routes)
