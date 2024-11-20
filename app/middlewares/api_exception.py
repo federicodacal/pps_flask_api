@@ -18,7 +18,7 @@ def handle_api_exceptions(error):
     response = {
         "error": error.message,
         "type": error.error_type,
-        #"traceback": error_trace
+        "traceback": error_trace
     }
     return jsonify(response), error.status_code
 
@@ -28,7 +28,7 @@ def handle_general_exceptions(error):
     response = {
         "error": str(error),
         "type": "Unhandled Exception",
-        #"traceback": error_trace
+        "traceback": error_trace
     }
     return jsonify(response), 500
     
