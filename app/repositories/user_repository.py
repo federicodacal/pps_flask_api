@@ -17,6 +17,10 @@ class UserRepository:
     @staticmethod
     def get_user_by_id_with_details(user_id):
         return User.query.options(joinedload(User.user_detail)).filter_by(ID=user_id).first() # type: ignore
+    
+    @staticmethod
+    def get_user_by_email(email):
+        return User.query.filter_by(email=email).first()
 
     @staticmethod
     def create_user(data):

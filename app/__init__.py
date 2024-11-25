@@ -1,5 +1,7 @@
+import os
 from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from .databases.mongodb import init_gridfs
 from .databases.db import db, migrate 
 from .routes.user_routes import user_routes
@@ -8,6 +10,7 @@ from .routes.favorites_routes import favorites_routes
 from .routes.purchase_routes import purchase_routes
 from .routes.auth_routes import auth_routes
 from .middlewares.api_exception import APIException, handle_api_exceptions, handle_general_exceptions
+from dotenv import load_dotenv
 import logging
 
 # Crear una instancia de Flask
@@ -25,6 +28,11 @@ migrate.init_app(app, db)
 
 # Inicializar GridFS
 init_gridfs(app)
+
+# Configurar JWT
+load_dotenv()
+app.secret_key = os.environ.get("JWT_SECRET_KEY")
+jwt = JWTManager(app)
 
 # Registrar middleware de manejo de excepciones
 app.register_error_handler(APIException, handle_api_exceptions)

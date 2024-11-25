@@ -33,6 +33,15 @@ class UserService:
         user_data["creator"] = user.creator.to_dict() if user.creator else None
 
         return user_data, 200
+    
+    @staticmethod
+    def get_user_by_email(email):
+        user = UserRepository.get_user_by_email(email)
+        if user is None:
+            return None        
+        user_data = user.to_dict()
+
+        return user_data
 
     @staticmethod
     def create_user(data):
