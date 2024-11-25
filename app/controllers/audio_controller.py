@@ -1,5 +1,6 @@
 from flask import Response, jsonify, request
 from ..services.audio_service import AudioService
+from flask_jwt_extended import jwt_required
 
 class AudioController:
 

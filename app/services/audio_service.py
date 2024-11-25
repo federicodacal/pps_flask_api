@@ -132,11 +132,11 @@ class AudioService:
             grid_fs = current_app.config['GRID_FS']
             grid_fs.delete(ObjectId(audio.file_name))
 
-            return {"message": f"Audio {audio_id}, ítem y archivo de mongodb eliminados correctamente."}
+            return {"message": f"Audio {audio_id}, ítem y archivo de mongodb eliminados correctamente."}, 200
 
         except Exception as e: 
             db.session.rollback()
-            raise RuntimeError(f"Ocurrió un error al eliminar el audio: {str(e)}")
+            return {"message": f"Ocurrió un error elimiando el audio: {e}"}, 500
         
     @staticmethod
     def get_audio_file_from_gridfs(file_name):

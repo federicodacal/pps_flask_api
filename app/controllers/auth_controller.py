@@ -9,11 +9,6 @@ class AuthController:
 
     @staticmethod
     def login():
-        response = AuthService.login()
-        return jsonify(response), 200
-    
-    @staticmethod
-    def create_token():
         #response = AuthService.create_token()
 
         data = request.json or {}
@@ -49,8 +44,8 @@ class AuthController:
     
     @staticmethod
     def logout():
-        response = AuthService.logout()
-        return jsonify(response), 200
+        response, status_code = AuthService.logout()
+        return jsonify(response), status_code
     
     @staticmethod
     def register():
