@@ -18,12 +18,16 @@ class AudioController:
     @staticmethod 
     def get_audio_file(audio_file_name):
         audio_file = AudioService.get_audio_file_from_gridfs(audio_file_name)
+
+        if not audio_file:
+            return {"message": "Archivo de audio no encontrado"}, 404
+
         return send_file(
             audio_file, 
             mimetype='audio/mpeg',  
             as_attachment=True, 
             download_name=audio_file.filename
-        )
+        ), 200
         
     @staticmethod
     def get_audios_by_creator(creator_id):

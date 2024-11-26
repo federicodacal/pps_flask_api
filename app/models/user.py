@@ -39,6 +39,7 @@ class User(db.Model):
             "email": self.email,
             "pwd": self.pwd,
             "type": self.type,
+            "state": self.state,
             "created_at": self.created_at,
             "modified_at": self.modified_at,
         }

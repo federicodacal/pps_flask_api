@@ -1,10 +1,10 @@
 class ConfigService:
     API_URL = {
-        'prod': 'http://localhost:5000',
+        'dev': 'http://localhost:5000',
         'prod': 'https://pps-flask-api.vercel.app'
     }
     current_url = API_URL['prod']
 
     @classmethod
     def set_environment(cls, environment):
-        cls.current_url = cls.API_URL.get(environment, cls.API_URL['dev'])
+        cls.current_url = cls.API_URL.get(environment, cls.API_URL['prod'])

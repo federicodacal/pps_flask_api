@@ -30,9 +30,12 @@ def validate_personal_ID(personal_ID):
     return True, ""
 
 def validate_phone_number(phone_number):
-    phone_regex = r'^\d{3}-\d{7}$'
+    if not isinstance(phone_number, str):
+        return False, "El número de teléfono debe ser una cadena."
+    
+    phone_regex = r'^[\d\-\(\)]{6,16}$'
     if not re.match(phone_regex, phone_number):
-        return False, "El formato del número de teléfono no es válido"
+        return False, "El número de teléfono debe tener entre 6 y 16 caracteres, y solo puede contener dígitos, guiones o paréntesis."
     return True, ""
 
 def validate_user_type(user_type):
@@ -49,7 +52,7 @@ def validate_account_type(user_type):
 
 @staticmethod
 def validate_user(data, action="create"):
-    required_fields = ["ID", "pwd", "personal_ID", "type", "state", "user_detail_ID", "username", "full_name"]
+    required_fields = ["ID", "pwd", "personal_ID", "phone_number", "type", "state", "user_detail_ID", "username", "full_name"]
 
     if action == "create":
         required_fields.append("email")
