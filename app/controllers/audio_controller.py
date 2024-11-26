@@ -1,4 +1,5 @@
-from flask import Response, jsonify, request
+import re
+from flask import Response, jsonify, request, send_file, stream_with_context
 from ..services.audio_service import AudioService
 from flask_jwt_extended import jwt_required
 
@@ -17,14 +18,13 @@ class AudioController:
     @staticmethod 
     def get_audio_file(audio_file_name):
         audio_file = AudioService.get_audio_file_from_gridfs(audio_file_name)
-
-        if not audio_file:
-            return {"error": "Archivo no encontrado en MongoDB"}, 404
-
-        return Response(audio_file.read(),
-                    mimetype='audio/mpeg',  
-                    headers={"Content-Disposition": f"attachment;filename={audio_file.filename}"})
-    
+        return send_file(
+            audio_file, 
+            mimetype='audio/mpeg',  
+            as_attachment=True, 
+            download_name=audio_file.filename
+        )
+        
     @staticmethod
     def get_audios_by_creator(creator_id):
         response, status_code = AudioService.get_audios_by_creator(creator_id)

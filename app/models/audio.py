@@ -1,11 +1,12 @@
 import datetime
+import uuid
 from sqlalchemy import func
 from ..databases.db import db
 
 class Audio(db.Model):
     __tablename__= 'audios'
 
-    ID = db.Column(db.String(50), primary_key=True)
+    ID = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     creator_ID = db.Column(db.String(50), db.ForeignKey('creators.ID'), nullable=False)
     file_name = db.Column(db.String(100), nullable=False)
     audio_name = db.Column(db.String(50), nullable=False)
@@ -22,17 +23,17 @@ class Audio(db.Model):
     modified_at = db.Column(db.DateTime, nullable=False)
     
     # Relaciones
-    item = db.relationship('Item', back_populates='audio', uselist=False)
+    item = db.relationship('Item', back_populates='audio', uselist=False, lazy='joined')
     creator = db.relationship('Creator', backref='creator', uselist=False)
     favorites = db.relationship('Favorite', back_populates='audio')
 
-    def __init__(self, ID, creator_ID, file_name, audio_name, state, category, genre, BPM,
-                 tone, length, size, description, score=None, created_at=None, modified_at=None):
-        self.ID = ID
+    def __init__(self, creator_ID, file_name, audio_name, category, genre, BPM,
+                 tone, length, size, description, state=None, score=None, created_at=None, modified_at=None, ID=None):
+        self.ID = ID if ID is not None else str(uuid.uuid4())
         self.creator_ID = creator_ID
         self.file_name = file_name
         self.audio_name = audio_name
-        self.state = state
+        self.state = state if state is not None else "created"
         self.category = category
         self.genre = genre
         self.BPM = BPM

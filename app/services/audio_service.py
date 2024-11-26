@@ -17,13 +17,17 @@ class AudioService:
         result = []
 
         for audio in audios:
-            audio_data = audio.to_dict()
-            audio_file = AudioService.get_audio_file_from_gridfs(audio.file_name)
+            try:
+                audio_data = audio.to_dict()
+                audio_file = AudioService.get_audio_file_from_gridfs(audio.file_name)
 
-            audio_data["item"] = audio.item.to_dict() if audio.item else None
-            audio_data["file_url"] = f"{ConfigService.current_url}/audios/file/{audio.file_name}" if audio_file else None
+                audio_data["item"] = audio.item.to_dict() if audio.item else None
+                audio_data["file_url"] = f"{ConfigService.current_url}/audios/file/{audio.file_name}" if audio_file else None
 
-            result.append(audio_data)
+                result.append(audio_data)
+            except Exception as e:
+                print(f"Error procesando audio {audio.ID}: {e}")
+                continue
 
         return result, 200
     
@@ -67,7 +71,7 @@ class AudioService:
 
             with db.session.begin():
                 new_audio = AudioRepository.create_audio(data, file_id_str)
-                new_item = ItemRepository.create_item(data, data["ID"])
+                new_item = ItemRepository.create_item(data, new_audio.ID)
 
             db.session.commit()
 

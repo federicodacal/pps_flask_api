@@ -18,11 +18,12 @@ class Item(db.Model):
     audio = db.relationship('Audio', back_populates='item', uselist=False)
     purchase_details = db.relationship('Purchase_detail', back_populates='item', lazy=True)
 
-    def __init__(self, creator_ID, audio_ID, price, state, created_at=None, modified_at=None):
+    def __init__(self, creator_ID, audio_ID, price, state=None, created_at=None, modified_at=None, ID=None):
+        self.ID = ID if ID is not None else str(uuid.uuid4())
         self.creator_ID = creator_ID
         self.audio_ID = audio_ID
         self.price = price
-        self.state = state
+        self.state = state if state is not None else "created"
         self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
         self.modified_at = modified_at if modified_at else datetime.datetime.now(datetime.timezone.utc)
 

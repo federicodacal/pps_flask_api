@@ -11,7 +11,7 @@ class AudioRepository:
     
     @staticmethod
     def get_all_audios_with_items():
-        return Audio.query.options(joinedload(Audio.item)).all() # type: ignore
+        return (Audio.query.options(joinedload(Audio.item)).all()) # type: ignore
     
     @staticmethod
     def get_audio_by_id_with_item(audio_id):
@@ -24,11 +24,9 @@ class AudioRepository:
     @staticmethod
     def create_audio(data, file_id):
         new_audio = Audio(
-            ID=data['ID'],
             creator_ID=data['creator_ID'],
             file_name=file_id,
             audio_name=data['audio_name'],
-            state=data['state'],
             category=data['category'],
             genre=data['genre'],
             BPM=data['BPM'],

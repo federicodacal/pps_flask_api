@@ -18,7 +18,6 @@ class ItemRepository:
             creator_ID=data['creator_ID'],
             audio_ID=audio_id,
             price=data['price'],
-            state="creado",
             created_at=datetime.datetime.now(datetime.timezone.utc),
             modified_at=datetime.datetime.now(datetime.timezone.utc)
         )

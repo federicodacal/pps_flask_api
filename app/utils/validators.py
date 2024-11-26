@@ -9,10 +9,13 @@ def validate_required_fields(data, required_fields):
         return False, f"Faltan los siguientes campos: {', '.join(missing_fields)}"
     return True, ""
 
-def validate_non_blank_fields(data):
-    blank_fields = [key for key, value in data.items() if isinstance(value, str) and value.strip() == '']
+def validate_non_blank_fields(data, fields_to_check):
+    blank_fields = [
+        field for field in fields_to_check
+        if field in data and isinstance(data[field], str) and data[field].strip() == ''
+    ]
     if blank_fields:
-        return False, f"Los siguientes campos son cadenas vacías: {', '.join(blank_fields)}"
+        return False, f"Los siguientes campos no pueden estar vacíos: {', '.join(blank_fields)}"
     return True, ""
 
 def validate_email(email):
@@ -55,7 +58,7 @@ def validate_user(data, action="create"):
     if not valid:
         return False, message
     
-    valid, message = validate_non_blank_fields(data)
+    valid, message = validate_non_blank_fields(data, required_fields)
     if not valid:
         return False, message
     
@@ -86,7 +89,7 @@ def validate_creator(data):
     if not valid:
         return False, message
     
-    valid, message = validate_non_blank_fields(data)
+    valid, message = validate_non_blank_fields(data, required_fields)
     if not valid:
         return False, message
     
@@ -103,12 +106,20 @@ def validate_BPM(bpm):
 
 def validate_audio_file(file):
     ALLOWED_EXTENSIONS = {'wav'}
+    MAX_FILE_SIZE = 4_300_000
     filename = secure_filename(file.filename)
     if not ('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
         return False, "El formato del archivo no es válido, sólo se permite .WAV"
     
+    file.seek(0, 2)  # Ir al final del archivo para obtener el tamaño
+    file_size = file.tell()
+    if file_size > MAX_FILE_SIZE:
+        return False, "El archivo excede el tamaño máximo permitido de 4 MB"
+
+    file.seek(0) # Resetear el puntero del archivo
+    
     file_data = BytesIO(file.read())
-    file.seek(0)  # Resetear el puntero del archivo para reutilizarlo después
+    file.seek(0)  # Resetear el puntero del archivo 
     with wave.open(file_data, 'rb') as wav_file:
         params = wav_file.getparams()
         if params.nchannels < 1 or params.framerate <= 0:
@@ -117,13 +128,13 @@ def validate_audio_file(file):
     return True, ""
 
 def validate_audio(data, file, action="create"):
-    required_fields = ['ID', 'audio_name', 'state', 'category', 'genre', 'BPM', 'tone', 'length', 'size', 'description', 'state_item', 'price', 'creator_ID', 'item_ID']
+    required_fields = ['audio_name', 'category', 'genre', 'BPM', 'tone', 'length', 'size', 'description', 'price', 'creator_ID']
 
     valid, message = validate_required_fields(data, required_fields)
     if not valid:
         return False, message
     
-    valid, message = validate_non_blank_fields(data)
+    valid, message = validate_non_blank_fields(data, required_fields)
     if not valid:
         return False, message
         
@@ -145,7 +156,7 @@ def validate_purchase(data):
     if not valid:
         return False, message
     
-    valid, message = validate_non_blank_fields(data)
+    valid, message = validate_non_blank_fields(data, required_fields)
     if not valid:
         return False, message
 
@@ -156,7 +167,7 @@ def validate_purchase(data):
         if not valid:
             return False, message
         
-        valid, message = validate_non_blank_fields(item)
+        valid, message = validate_non_blank_fields(item, item_required_fields)
         if not valid:
             return False, message    
     
