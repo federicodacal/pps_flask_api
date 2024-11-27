@@ -1,3 +1,4 @@
+from ..services.mail_service import MailService
 from ..utils.validators import validate_user, validate_creator
 from ..middlewares.api_exception import APIException
 from ..repositories.user_repository import UserRepository
@@ -71,12 +72,16 @@ class UserService:
 
             db.session.commit()
 
+            confirmation_email, status_code = MailService.send_confirmation_email(new_user.email, new_user_detail.full_name, new_user.ID)
+
             return {
                 "user": new_user.to_dict(),
                 "user_detail": new_user_detail.to_dict(),
                 "creator": new_creator.to_dict() if new_creator else None,
-                "account": new_account.to_dict() if new_account else None
-            }, 200
+                "account": new_account.to_dict() if new_account else None,
+                "confirmation_email": confirmation_email if confirmation_email else None
+            }, status_code
+        
         except APIException as aex:
             db.session.rollback()
             return {"message": str(aex), "error_type": aex.error_type}, aex.status_code
@@ -84,7 +89,6 @@ class UserService:
             db.session.rollback()
             return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
         
-
     @staticmethod
     def update_user(user_id, data):
         try:
@@ -133,3 +137,17 @@ class UserService:
         except Exception as e:
             db.session.rollback()
             return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
+        
+    @staticmethod
+    def delete_user(user_id):
+        return {"message":"Baja lógica de user. Aún por implementar"}, 200
+    
+    @staticmethod
+    def confirm_user_email(user_id):
+        user = UserService.get_user_by_id(user_id)
+        if user is None:
+            return {"message": f"Usuario con id {user_id} no encontrado"}, 404
+        
+        # CAMBIAR 'state' user a 'verified'
+        
+        return {"message":"Confirmación de ruta email. Aún por implementar"}, 200

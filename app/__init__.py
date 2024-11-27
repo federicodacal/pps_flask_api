@@ -31,8 +31,10 @@ migrate.init_app(app, db)
 # Inicializar GridFS
 init_gridfs(app)
 
-# Configurar JWT
+# Cargar dotenv
 load_dotenv()
+
+# Configurar JWT
 app.secret_key = os.environ.get("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 revoked_tokens = set()
