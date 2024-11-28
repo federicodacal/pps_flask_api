@@ -1,9 +1,15 @@
 import datetime
+
+from ..models.audio import Audio
 from ..databases.db import db
 from ..models.creator import Creator
 from sqlalchemy.orm import joinedload
 
 class CreatorRepository:
+
+    @staticmethod
+    def get_creator_by_id(creator_id):
+        return Creator.query.filter_by(ID=creator_id).first()
 
     @staticmethod
     def get_creator_by_user_id(user_id):
@@ -12,6 +18,10 @@ class CreatorRepository:
     @staticmethod 
     def get_creator_with_account(creator_id):
         return Creator.query.options(joinedload(Creator.account)).filter_by(ID=creator_id).first() # type: ignore
+    
+    @staticmethod 
+    def get_creator_with_audios(creator_id):
+        return Creator.query.options(joinedload(Creator.audios).joinedload(Audio.item)).filter_by(ID=creator_id).first() #type: ignore
 
     @staticmethod
     def create_creator(data):

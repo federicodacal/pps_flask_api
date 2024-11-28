@@ -19,7 +19,7 @@ class AudioRepository:
     
     @staticmethod
     def get_audios_by_creator(creator_id):
-        return Audio.query.filter_by(creator_ID=creator_id).all() #type: ignore
+        return Audio.query.options(joinedload(Audio.item)).filter_by(creator_ID=creator_id).all() #type: ignore
 
     @staticmethod
     def create_audio(data, file_id):
@@ -64,3 +64,15 @@ class AudioRepository:
         audio = Audio.query.get(audio_id)
         if audio:
             db.session.delete(audio)
+
+    @staticmethod
+    def update_state_audio(ID, state):
+        audio = Audio.query.get(ID)
+
+        if not audio: 
+            return None
+        
+        audio.state = state
+        audio.modified_at = datetime.datetime.now(datetime.timezone.utc) 
+
+        return audio

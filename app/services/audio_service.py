@@ -49,9 +49,22 @@ class AudioService:
     @staticmethod
     def get_audios_by_creator(creator_id):
         audios = AudioRepository.get_audios_by_creator(creator_id)
-        result = [audio.to_dict() for audio in audios] 
+        result = []
+
+        for audio in audios:
+            try:
+                audio_data = audio.to_dict()
+                audio_file = AudioService.get_audio_file_from_gridfs(audio.file_name)
+
+                audio_data["item"] = audio.item.to_dict() if audio.item else None 
+                audio_data["file_url"] = f"{ConfigService.current_url}/audios/file/{audio.file_name}" if audio_file else None
+
+                result.append(audio_data)
+            except Exception as e:
+                print(f"Error procesando audio {audio.ID}: {e}")
+
         return result, 200
-    
+
     @staticmethod 
     def create_audio(data, file):
         try:

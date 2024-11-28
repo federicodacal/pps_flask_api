@@ -42,3 +42,15 @@ class ItemRepository:
         item = Item.query.get(item_id)
         if item:
             db.session.delete(item)
+
+    @staticmethod
+    def update_state_item(ID, state):
+        item = Item.query.get(ID)
+
+        if not item: 
+            return None
+        
+        item.state = state
+        item.modified_at = datetime.datetime.now(datetime.timezone.utc) 
+
+        return item

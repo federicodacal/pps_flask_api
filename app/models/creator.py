@@ -18,6 +18,7 @@ class Creator(db.Model):
 
     # Relaciones
     account = db.relationship('Account', back_populates='creator', uselist=False)
+    audios = db.relationship('Audio', back_populates='creator', lazy=True)
 
     def __init__(self, ID, user_ID, profile, state, subscription_ID, points=None, credits=None, created_at=None, modified_at=None):
         self.ID = ID

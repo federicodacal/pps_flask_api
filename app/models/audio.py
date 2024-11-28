@@ -24,7 +24,7 @@ class Audio(db.Model):
     
     # Relaciones
     item = db.relationship('Item', back_populates='audio', uselist=False, lazy='joined')
-    creator = db.relationship('Creator', backref='creator', uselist=False)
+    creator = db.relationship('Creator', back_populates='audios', uselist=False)
     favorites = db.relationship('Favorite', back_populates='audio')
 
     def __init__(self, creator_ID, file_name, audio_name, category, genre, BPM,

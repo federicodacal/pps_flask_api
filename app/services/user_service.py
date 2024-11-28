@@ -1,3 +1,7 @@
+from ..repositories.audio_repository import AudioRepository
+from ..repositories.item_repository import ItemRepository
+from ..services.audio_service import AudioService
+from ..models.audio import Audio
 from ..services.mail_service import MailService
 from ..utils.validators import validate_user, validate_creator
 from ..middlewares.api_exception import APIException
@@ -139,7 +143,7 @@ class UserService:
             return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
         
     @staticmethod
-    def delete_user(user_id):
+    def deactivate_user(user_id):
         try: 
             user = UserRepository.get_user_by_id_with_details(user_id)
             if user is None:
@@ -150,8 +154,38 @@ class UserService:
             db.session.commit()
 
             return {
-                "message":f"El usuario: {user_id} ahora es 'inactivo'.",
+                "message":f"El usuario: {user_id} ahora es 'inactive'.",
                 "user": updated_user.to_dict() if updated_user else None,
+            }, 200
+
+        except Exception as e:
+            db.session.rollback()
+            return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
+        
+    @staticmethod
+    def deactivate_creator(creator_id):
+        try:
+            creator = CreatorRepository.get_creator_with_audios(creator_id)
+            if creator is None:
+                return {"message": f"Creator con id {creator} no encontrado"}, 404
+            
+            updated_creator = CreatorRepository.update_state_creator(creator_id, 'inactive')
+
+            updated_audios = []
+            for audio in creator.audios:
+                AudioRepository.update_state_audio(audio.ID,'inactive')
+                ItemRepository.update_state_item(audio.item.ID, 'inactive')               
+                audio_data = audio.to_dict()
+            
+                audio_data["item"] = audio.item.to_dict() if audio.item else None
+                updated_audios.append(audio_data)
+
+            db.session.commit()
+
+            return {
+                "message":f"El creador {creator_id} y sus audios ahora están 'inactive'",
+                "updated_creator": updated_creator.to_dict() if updated_creator else None,
+                "audios": updated_audios if updated_audios else None
             }, 200
 
         except Exception as e:
@@ -164,9 +198,7 @@ class UserService:
             user = UserRepository.get_user_by_id_with_details(user_id)
             if user is None:
                 return {"message": f"Usuario con id {user_id} no encontrado"}, 404
-            
-            print(user.to_dict())
-            
+
             if user.state != 'created':
                 return {"message": f"El estado del usuario debe ser 'created'"}, 400
             

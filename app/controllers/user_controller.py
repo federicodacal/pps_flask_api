@@ -27,8 +27,13 @@ class UserController:
         return jsonify(response), status_code
     
     @staticmethod
-    def delete_user(user_id):
-        response, status_code = UserService.delete_user(user_id)
+    def deactivate_user(user_id):
+        response, status_code = UserService.deactivate_user(user_id)
+        return jsonify(response), status_code
+    
+    @staticmethod
+    def deactivate_creator(creator_id):
+        response, status_code = UserService.deactivate_creator(creator_id)
         return jsonify(response), status_code
     
     @staticmethod
