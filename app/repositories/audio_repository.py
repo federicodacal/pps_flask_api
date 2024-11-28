@@ -76,3 +76,14 @@ class AudioRepository:
         audio.modified_at = datetime.datetime.now(datetime.timezone.utc) 
 
         return audio
+    
+    @staticmethod
+    def add_points_to_audio(ID, points):
+        audio = Audio.query.get(ID)
+        if not audio:
+            return None
+        
+        audio.score += points
+        audio.modified_at = datetime.datetime.now(datetime.timezone.utc)
+       
+        return audio

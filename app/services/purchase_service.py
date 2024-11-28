@@ -70,6 +70,14 @@ class PurchaseService:
 
                     PurchaseDetailRepository.create_purchase_detail(purchase.ID, item_id)
 
+                    match audio.category:
+                        case 'sample':
+                            AudioRepository.add_points_to_audio(audio.ID, 25)
+                        case 'acapella':
+                            AudioRepository.add_points_to_audio(audio.ID, 30)
+                        case 'effect':
+                            AudioRepository.add_points_to_audio(audio.ID, 10)
+
             db.session.commit()
 
             return {"purchase_id": purchase.ID}, 200

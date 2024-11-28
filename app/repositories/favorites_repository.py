@@ -10,7 +10,7 @@ class FavoritesRepository:
     
     @staticmethod
     def get_favorite(user_id, audio_id):
-        return Favorite.query.filter_by(user_ID=user_id, ID=audio_id).first()
+        return Favorite.query.filter_by(user_ID=user_id, audio_ID=audio_id).first()
     
     @staticmethod 
     def add_favorite(user_id, audio_id):
