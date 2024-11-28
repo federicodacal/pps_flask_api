@@ -163,18 +163,18 @@ class UserService:
             return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
         
     @staticmethod
-    def deactivate_creator(creator_id):
+    def update_creator_state(creator_id, updated_state):
         try:
             creator = CreatorRepository.get_creator_with_audios(creator_id)
             if creator is None:
                 return {"message": f"Creator con id {creator} no encontrado"}, 404
             
-            updated_creator = CreatorRepository.update_state_creator(creator_id, 'inactive')
+            updated_creator = CreatorRepository.update_state_creator(creator_id, updated_state)
 
             updated_audios = []
             for audio in creator.audios:
-                AudioRepository.update_state_audio(audio.ID,'inactive')
-                ItemRepository.update_state_item(audio.item.ID, 'inactive')               
+                AudioRepository.update_state_audio(audio.ID,updated_state)
+                ItemRepository.update_state_item(audio.item.ID, updated_state)               
                 audio_data = audio.to_dict()
             
                 audio_data["item"] = audio.item.to_dict() if audio.item else None
@@ -183,7 +183,7 @@ class UserService:
             db.session.commit()
 
             return {
-                "message":f"El creador {creator_id} y sus audios ahora están 'inactive'",
+                "message":f"El creador {creator_id} y sus audios ahora están '{updated_state}'",
                 "updated_creator": updated_creator.to_dict() if updated_creator else None,
                 "audios": updated_audios if updated_audios else None
             }, 200

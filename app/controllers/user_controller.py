@@ -33,7 +33,12 @@ class UserController:
     
     @staticmethod
     def deactivate_creator(creator_id):
-        response, status_code = UserService.deactivate_creator(creator_id)
+        response, status_code = UserService.update_creator_state(creator_id, 'inactive')
+        return jsonify(response), status_code
+    
+    @staticmethod
+    def reactivate_creator(creator_id):
+        response, status_code = UserService.update_creator_state(creator_id, 'active')
         return jsonify(response), status_code
     
     @staticmethod
