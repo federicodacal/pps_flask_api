@@ -7,7 +7,6 @@ class UserDetailRepository:
     @staticmethod
     def create_user_detail(data):
         new_user_detail = User_detail(
-            ID=data['user_detail_ID'],
             personal_ID=data['personal_ID'],
             username=data['username'],
             full_name=data['full_name'],

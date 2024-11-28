@@ -25,12 +25,10 @@ class UserRepository:
     @staticmethod
     def create_user(data):
         new_user = User(
-            ID=data['ID'],
             user_detail_ID=data['user_detail_ID'],
             email=data['email'],
             pwd=data['pwd'],
             type=data['type'],
-            state=data['state'],
             created_at=datetime.datetime.now(datetime.timezone.utc),
             modified_at=datetime.datetime.now(datetime.timezone.utc),
         )

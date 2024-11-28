@@ -11,7 +11,6 @@ class AccountRepository:
     @staticmethod
     def create_account(data):
         new_account = Account(
-            ID=data['account_ID'],
             creator_ID=data['creator_ID'],
             personal_account_ID=data['personal_account_ID'],
             type=data['account_type'],

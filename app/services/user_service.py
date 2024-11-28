@@ -1,3 +1,4 @@
+from werkzeug.security import generate_password_hash
 from ..repositories.audio_repository import AudioRepository
 from ..repositories.item_repository import ItemRepository
 from ..services.audio_service import AudioService
@@ -53,15 +54,23 @@ class UserService:
         try:
             if not data:
                 return {"message": "Los datos proporcionados están vacíos"}, 400
-            
+        
             validation, msg = validate_user(data)
             if not validation:
                 return {"message":msg}, 400
-            
+        
             with db.session.begin():
 
                 new_user_detail = UserDetailRepository.create_user_detail(data)
+                data["user_detail_ID"] = new_user_detail.ID
+
+                pwd = data.get("pwd")
+                hashed_password = generate_password_hash(pwd)
+                data["pwd"] = hashed_password
+
                 new_user = UserRepository.create_user(data)
+                data["ID"] = new_user.ID
+
                 new_creator = None
                 new_account = None
 
@@ -72,19 +81,21 @@ class UserService:
                         raise APIException(msg, status_code=400, error_type="Value Error")
 
                     new_creator = CreatorRepository.create_creator(data)
+                    data["creator_ID"] = new_creator.ID
+
                     new_account = AccountRepository.create_account(data)
 
             db.session.commit()
 
-            confirmation_email, status_code = MailService.send_confirmation_email(new_user.email, new_user_detail.full_name, new_user.ID)
+            #confirmation_email, status_code = MailService.send_confirmation_email(new_user.email, new_user_detail.full_name, new_user.ID)
 
             return {
                 "user": new_user.to_dict(),
                 "user_detail": new_user_detail.to_dict(),
                 "creator": new_creator.to_dict() if new_creator else None,
                 "account": new_account.to_dict() if new_account else None,
-                "confirmation_email": confirmation_email if confirmation_email else None
-            }, status_code
+                #"confirmation_email": confirmation_email if confirmation_email else None
+            }, 200
         
         except APIException as aex:
             db.session.rollback()

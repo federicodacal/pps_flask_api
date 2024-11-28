@@ -1,11 +1,12 @@
 import datetime
+import uuid
 
 from ..databases.db import db
 
 class User_detail(db.Model):
     __tablename__= 'users_details'
 
-    ID = db.Column(db.String(50), primary_key=True)
+    ID = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     personal_ID = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(50), nullable=False)
     full_name = db.Column(db.String(50), nullable=False)
@@ -13,8 +14,8 @@ class User_detail(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     modified_at = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, ID, personal_ID, username, full_name, phone_number, created_at=None, modified_at=None):
-        self.ID = ID
+    def __init__(self, personal_ID, username, full_name, phone_number, ID = None, created_at=None, modified_at=None):
+        self.ID = ID if ID is not None else str(uuid.uuid4())
         self.personal_ID = personal_ID
         self.username = username
         self.full_name = full_name
