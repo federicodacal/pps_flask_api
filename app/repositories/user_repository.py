@@ -50,3 +50,14 @@ class UserRepository:
         user.modified_at = datetime.datetime.now(datetime.timezone.utc)
         
         return user
+    
+    @staticmethod
+    def update_state_user(ID, state):
+        user = User.query.get(ID)
+
+        if not user: 
+            return None
+        
+        user.state = state 
+
+        return user

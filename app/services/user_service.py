@@ -144,10 +144,20 @@ class UserService:
     
     @staticmethod
     def confirm_user_email(user_id):
-        user = UserService.get_user_by_id(user_id)
-        if user is None:
-            return {"message": f"Usuario con id {user_id} no encontrado"}, 404
-        
-        # CAMBIAR 'state' user a 'verified'
-        
-        return {"message":"Confirmación de ruta email. Aún por implementar"}, 200
+        try: 
+            user = UserService.get_user_by_id(user_id)
+            if user is None:
+                return {"message": f"Usuario con id {user_id} no encontrado"}, 404
+            
+            updated_user = UserRepository.update_state_user(user_id, 'verified')
+
+            db.session.commit()
+
+            return {
+                "message":"Email ha sido verificado con éxito.",
+                "user": updated_user.to_dict() if updated_user else None,
+            }, 200
+
+        except Exception as e:
+            db.session.rollback()
+            return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500

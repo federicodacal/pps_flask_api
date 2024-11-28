@@ -45,3 +45,13 @@ class CreatorRepository:
 
         return creator
     
+    @staticmethod
+    def update_state_creator(ID, state):
+        creator = Creator.query.get(ID)
+
+        if not creator: 
+            return None
+        
+        creator.state = state 
+
+        return creator
