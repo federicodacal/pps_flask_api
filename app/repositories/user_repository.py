@@ -58,6 +58,7 @@ class UserRepository:
         if not user: 
             return None
         
-        user.state = state 
+        user.state = state
+        user.modified_at = datetime.datetime.now(datetime.timezone.utc) 
 
         return user

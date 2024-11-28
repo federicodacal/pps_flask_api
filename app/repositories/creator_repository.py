@@ -52,6 +52,7 @@ class CreatorRepository:
         if not creator: 
             return None
         
-        creator.state = state 
+        creator.state = state
+        creator.modified_at = datetime.datetime.now(datetime.timezone.utc) 
 
         return creator

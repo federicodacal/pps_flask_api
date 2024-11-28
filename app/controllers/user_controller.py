@@ -26,7 +26,7 @@ class UserController:
         response, status_code = UserService.update_user(user_id, data)
         return jsonify(response), status_code
     
-    @staticmethod # BAJA LÓGICA falta implementar
+    @staticmethod
     def delete_user(user_id):
         response, status_code = UserService.delete_user(user_id)
         return jsonify(response), status_code

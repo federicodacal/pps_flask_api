@@ -140,14 +140,35 @@ class UserService:
         
     @staticmethod
     def delete_user(user_id):
-        return {"message":"Baja lógica de user. Aún por implementar"}, 200
+        try: 
+            user = UserRepository.get_user_by_id_with_details(user_id)
+            if user is None:
+                return {"message": f"Usuario con id {user_id} no encontrado"}, 404
+            
+            updated_user = UserRepository.update_state_user(user_id, 'inactive')
+
+            db.session.commit()
+
+            return {
+                "message":f"El usuario: {user_id} ahora es 'inactivo'.",
+                "user": updated_user.to_dict() if updated_user else None,
+            }, 200
+
+        except Exception as e:
+            db.session.rollback()
+            return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
     
     @staticmethod
     def confirm_user_email(user_id):
         try: 
-            user = UserService.get_user_by_id(user_id)
+            user = UserRepository.get_user_by_id_with_details(user_id)
             if user is None:
                 return {"message": f"Usuario con id {user_id} no encontrado"}, 404
+            
+            print(user.to_dict())
+            
+            if user.state != 'created':
+                return {"message": f"El estado del usuario debe ser 'created'"}, 400
             
             updated_user = UserRepository.update_state_user(user_id, 'verified')
 
