@@ -1,3 +1,4 @@
+from ..services.mail_service import MailService
 from ..repositories.audio_repository import AudioRepository
 from ..services.audio_service import AudioService
 from ..services.config_service import ConfigService

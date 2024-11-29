@@ -27,8 +27,13 @@ class UserController:
         return jsonify(response), status_code
     
     @staticmethod
+    def approve_user(user_id):
+        response, status_code = UserService.update_user_state(user_id, 'active')
+        return jsonify(response), status_code
+    
+    @staticmethod
     def deactivate_user(user_id):
-        response, status_code = UserService.deactivate_user(user_id)
+        response, status_code = UserService.update_user_state(user_id, 'inactive')
         return jsonify(response), status_code
     
     @staticmethod
@@ -37,7 +42,7 @@ class UserController:
         return jsonify(response), status_code
     
     @staticmethod
-    def reactivate_creator(creator_id):
+    def activate_creator(creator_id):
         response, status_code = UserService.update_creator_state(creator_id, 'active')
         return jsonify(response), status_code
     

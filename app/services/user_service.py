@@ -87,14 +87,14 @@ class UserService:
 
             db.session.commit()
 
-            #confirmation_email, status_code = MailService.send_confirmation_email(new_user.email, new_user_detail.full_name, new_user.ID)
+            confirmation_email, status_code = MailService.send_confirmation_email(new_user.email, new_user_detail.full_name, new_user.ID)
 
             return {
                 "user": new_user.to_dict(),
                 "user_detail": new_user_detail.to_dict(),
                 "creator": new_creator.to_dict() if new_creator else None,
                 "account": new_account.to_dict() if new_account else None,
-                #"confirmation_email": confirmation_email if confirmation_email else None
+                "confirmation_email": confirmation_email if confirmation_email else None
             }, 200
         
         except APIException as aex:
@@ -154,19 +154,34 @@ class UserService:
             return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
         
     @staticmethod
-    def deactivate_user(user_id):
+    def update_user_state(user_id, updated_state):
         try: 
             user = UserRepository.get_user_by_id_with_details(user_id)
             if user is None:
                 return {"message": f"Usuario con id {user_id} no encontrado"}, 404
             
-            updated_user = UserRepository.update_state_user(user_id, 'inactive')
+            updated_user = UserRepository.update_state_user(user_id, updated_state)
+
+            if(user.type == 'creator'):
+                creator = CreatorRepository.get_creator_by_user_id(user_id)
+                if creator is not None:
+                    updated_creator = CreatorRepository.update_state_creator(creator.ID, updated_state)
+
+            user_data = user.to_dict()
+            user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
+            
+            if updated_state == 'active':
+                mail, status = MailService.send_approval_email(user_data)
+            elif updated_state == 'inactive':
+                mail, status = MailService.send_rejection_email(user_data)
 
             db.session.commit()
 
             return {
-                "message":f"El usuario: {user_id} ahora es 'inactive'.",
+                "message":f"El usuario: {user_id} ahora es {updated_state}",
                 "user": updated_user.to_dict() if updated_user else None,
+                "creator": updated_creator.to_dict() if updated_creator else None,
+                "mail": mail if mail else None
             }, 200
 
         except Exception as e:
@@ -193,10 +208,20 @@ class UserService:
 
             db.session.commit()
 
+            if updated_state == 'inactive':
+                user = UserRepository.get_user_by_id_with_details(creator.user_ID)
+
+                if user is not None:
+                    user_data = user.to_dict()
+                    user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
+
+                    deactivation_email, status = MailService.send_deactivation_email(user_data)
+
             return {
                 "message":f"El creador {creator_id} y sus audios ahora están '{updated_state}'",
                 "updated_creator": updated_creator.to_dict() if updated_creator else None,
-                "audios": updated_audios if updated_audios else None
+                "audios": updated_audios if updated_audios else None,
+                "deactivation_email": deactivation_email if deactivation_email else None
             }, 200
 
         except Exception as e:
