@@ -19,8 +19,8 @@ class UserRepository:
         return User.query.options(joinedload(User.user_detail)).filter_by(ID=user_id).first() # type: ignore
     
     @staticmethod
-    def get_user_by_email(email):
-        return User.query.filter_by(email=email).first()
+    def get_user_by_email_with_details(email):
+        return User.query.options(joinedload(User.user_detail)).filter_by(email=email).first() #type: ignore
 
     @staticmethod
     def create_user(data):

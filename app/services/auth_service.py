@@ -24,15 +24,33 @@ class AuthService:
         if user is None:
             return {"message": f"Usuario con email {email} no encontrado"}, 404
 
+        # DESENCRIPTAR PWD
+
         if not password == user["pwd"]:
             return {"message": "No autorizado"}, 401
         else:
             expires_in = timedelta(minutes=30)
-            token = create_access_token(identity=email, expires_delta=expires_in)
+
+            user_data = user 
+            user_data["user_detail"] = user.get("user_detail")  
+
+            payload = {
+                "ID": user_data["ID"],
+                "email": user_data["email"],
+                "type": user_data["type"],
+                "full_name": user_data["user_detail"]["full_name"],
+                "username": user_data["user_detail"]["username"],
+            }
+
+            print("Payload: ")
+            print(payload)
+            print("\n")
+
+            token = create_access_token(identity=payload, expires_delta=expires_in)
+            
             return {
                 "message": "Token creado con éxito",
                 "token": token,
-                "user": user,
                 "status_code": 200
             }, 200
     

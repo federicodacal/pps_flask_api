@@ -42,10 +42,11 @@ class UserService:
     
     @staticmethod
     def get_user_by_email(email):
-        user = UserRepository.get_user_by_email(email)
+        user = UserRepository.get_user_by_email_with_details(email)
         if user is None:
             return None        
         user_data = user.to_dict()
+        user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
 
         return user_data
 
