@@ -1,5 +1,7 @@
 import datetime
 from sqlalchemy import text
+
+from ..models.user_detail import User_detail
 from ..databases.db import db
 from ..models.user import User
 from sqlalchemy.orm import joinedload
@@ -21,6 +23,10 @@ class UserRepository:
     @staticmethod
     def get_user_by_email_with_details(email):
         return User.query.options(joinedload(User.user_detail)).filter_by(email=email).first() #type: ignore
+    
+    @staticmethod
+    def get_user_by_username_with_details(username):
+        return User.query.join(User_detail, User.user_detail_ID == User_detail.ID).options(joinedload(User.user_detail)).filter(User_detail.username == username).first() #type: ignore
 
     @staticmethod
     def create_user(data):

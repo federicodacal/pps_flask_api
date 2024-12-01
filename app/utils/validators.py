@@ -3,6 +3,9 @@ import wave
 from werkzeug.utils import secure_filename
 from io import BytesIO
 
+from ..databases.db import db
+from ..repositories.user_repository import UserRepository
+
 def validate_required_fields(data, required_fields):
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
@@ -22,6 +25,22 @@ def validate_email(email):
     email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
     if not re.match(email_regex, email):
         return False, "El formato del correo electrónico no es válido"
+    
+    with db.session.begin():  
+        email_exists = UserRepository.get_user_by_email_with_details(email)
+
+    if email_exists is not None:
+        return False, "El email ya se ha registrado"
+    
+    return True, ""
+
+def validate_username(username):
+    with db.session.begin():  
+        username_exists = UserRepository.get_user_by_username_with_details(username)
+
+    if username_exists is not None:
+        return False, f"El username {username} ya se ha registrado"
+    
     return True, ""
 
 def validate_personal_ID(personal_ID):
@@ -69,6 +88,10 @@ def validate_user(data, action="create"):
         valid, message = validate_email(data.get("email"))
         if not valid:
             return False, message
+        
+    valid, message = validate_username(data.get("username"))
+    if not valid:
+        return False, message
     
     valid, message = validate_phone_number(data.get("phone_number"))
     if not valid:
