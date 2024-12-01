@@ -155,6 +155,38 @@ class AudioService:
             db.session.rollback()
             return {"message": f"Ocurrió un error elimiando el audio: {e}"}, 500
         
+    @staticmethod 
+    def update_state_audio(audio_id, updated_state):
+        try: 
+            audio = AudioRepository.get_audio_by_id_with_item(audio_id)
+            if audio is None:
+                return {"message": f"Audio con id {audio_id} no encontrado"}, 404
+            
+            updated_audio = AudioRepository.update_state_audio(audio_id, updated_state)
+            updated_item = ItemRepository.update_state_item(audio.item.ID, updated_state)
+            
+            if updated_state == 'active':
+                mail = 'audio active'
+                #mail, status = MailService.send_approval_email(audio_data)
+            elif updated_state == 'inactive':
+                mail = 'audio inactive'
+                #mail, status = MailService.send_rejection_email(audio_data)
+                #AudioService.delete_audio(audio_id)
+
+            db.session.commit()
+
+            return {
+                "message":f"El usuario: {audio_id} ahora es {updated_state}",
+                "audio": updated_audio.to_dict() if updated_audio else None,
+                "item": updated_item.to_dict() if updated_item else None,
+                "mail": mail if mail else None
+            }, 200
+
+        except Exception as e:
+            db.session.rollback()
+            return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
+
+        
     @staticmethod
     def get_audio_file_from_gridfs(file_name):
         grid_fs = current_app.config['GRID_FS']

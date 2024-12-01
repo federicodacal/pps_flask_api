@@ -10,3 +10,5 @@ audio_routes.route('/audios/<string:audio_id>', methods=['PUT'])(AudioController
 audio_routes.route('/audios/<string:audio_id>', methods=['DELETE'])(AudioController.delete_audio)
 audio_routes.route('/audios/creator/<string:creator_id>', methods=['GET'])(AudioController.get_audios_by_creator)
 audio_routes.route('/audios/file/<string:audio_file_name>', methods=['GET'])(AudioController.get_audio_file)
+audio_routes.route('/audios/approval/<string:audio_id>', methods=['PUT'])(AudioController.approve_audio)
+audio_routes.route('/audios/approval/<string:audio_id>', methods=['DELETE'])(AudioController.reject_audio)

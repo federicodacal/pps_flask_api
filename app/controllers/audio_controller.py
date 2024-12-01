@@ -52,3 +52,13 @@ class AudioController:
     def delete_audio(audio_id):
         response, status_code = AudioService.delete_audio(audio_id)
         return jsonify(response), status_code
+    
+    @staticmethod
+    def approve_audio(audio_id):
+        response, status_code = AudioService.update_state_audio(audio_id, 'active')
+        return jsonify(response), status_code
+    
+    @staticmethod
+    def reject_audio(audio_id):
+        response, status_code = AudioService.update_state_audio(audio_id, 'inactive')
+        return jsonify(response), status_code
