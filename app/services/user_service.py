@@ -110,7 +110,7 @@ class UserService:
         try:
             if not data: 
                 return {"message": "Los datos proporcionados están vacíos"}, 400
-
+            
             user = UserRepository.get_user_by_id_with_details(user_id)
             if not user:
                 return {"message": f"Usuario con id {user_id} no encontrado"}, 404

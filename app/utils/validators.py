@@ -34,12 +34,19 @@ def validate_email(email):
     
     return True, ""
 
-def validate_username(username):
-    with db.session.begin():  
+def validate_username(username, action, current_user):
+    if action == "create":
+        with db.session.begin():  
+            username_exists = UserRepository.get_user_by_username_with_details(username)
+
+        if username_exists is not None:
+            return False, f"El username {username} ya se ha registrado"
+        
+    elif action == 'update':
         username_exists = UserRepository.get_user_by_username_with_details(username)
 
-    if username_exists is not None:
-        return False, f"El username {username} ya se ha registrado"
+        if username_exists is not None and username_exists.ID != current_user.get("ID"):
+            return False, f"El username {username} ya se ha registrado"
     
     return True, ""
 
@@ -89,7 +96,7 @@ def validate_user(data, action="create"):
         if not valid:
             return False, message
         
-    valid, message = validate_username(data.get("username"))
+    valid, message = validate_username(data.get("username"), action, data)
     if not valid:
         return False, message
     

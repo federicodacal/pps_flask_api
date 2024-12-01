@@ -20,7 +20,7 @@ class AuthService:
         password = data["pwd"]
 
         user = UserService.get_user_by_email(email)
-        
+
         if user is None:
             return {"message": f"Usuario con email {email} no encontrado"}, 404
 

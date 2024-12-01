@@ -176,7 +176,7 @@ class AudioService:
             db.session.commit()
 
             return {
-                "message":f"El usuario: {audio_id} ahora es {updated_state}",
+                "message":f"El Audio: {audio_id} ahora es {updated_state}",
                 "audio": updated_audio.to_dict() if updated_audio else None,
                 "item": updated_item.to_dict() if updated_item else None,
                 "mail": mail if mail else None
