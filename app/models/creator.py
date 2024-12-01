@@ -20,6 +20,7 @@ class Creator(db.Model):
     # Relaciones
     account = db.relationship('Account', back_populates='creator', uselist=False)
     audios = db.relationship('Audio', back_populates='creator', lazy=True)
+    user = db.relationship('User', back_populates='creator', lazy='joined')
 
     def __init__(self, user_ID, profile, subscription_ID, ID=None, state = None, points=None, credits=None, created_at=None, modified_at=None):
         self.ID = ID if ID is not None else str(uuid.uuid4())

@@ -17,10 +17,10 @@ class User(db.Model):
     modified_at = db.Column(db.DateTime, nullable=False)
 
     # Relaciones
-    purchased_audios = db.relationship('Purchase', backref='buyer', lazy=True)
+    purchased_audios = db.relationship('Purchase', back_populates='buyer', lazy=True)
     favorites = db.relationship('Favorite', back_populates='user')
     user_detail = db.relationship("User_detail", backref="user", lazy="joined")
-    creator = db.relationship("Creator", backref="user", uselist=False)
+    creator = db.relationship("Creator", back_populates="user", uselist=False)
 
     def __init__(self, user_detail_ID, email, pwd, type, ID = None, state = None, created_at=None, modified_at=None):
         self.ID = ID if ID is not None else str(uuid.uuid4())

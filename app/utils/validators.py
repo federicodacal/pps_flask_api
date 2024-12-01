@@ -39,7 +39,7 @@ def validate_phone_number(phone_number):
     return True, ""
 
 def validate_user_type(user_type):
-    valid_types = ['creator', 'buyer']
+    valid_types = ['creator', 'buyer', 'mod']
     if user_type not in valid_types:
         return False, f"El tipo de usuario debe ser uno de los siguientes: {', '.join(valid_types)}"
     return True, ""

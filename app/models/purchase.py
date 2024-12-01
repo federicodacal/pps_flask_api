@@ -15,6 +15,7 @@ class Purchase(db.Model):
 
     # Relaciones
     purchase_details = db.relationship('Purchase_detail', backref='purchase', lazy=True)
+    buyer = db.relationship('User', back_populates='purchased_audios')
 
     def __init__(self, buyer_ID, flow_type, payment_method, state, created_at=None, modified_at=None, ID=None):
         self.ID = ID if ID is not None else str(uuid.uuid4())

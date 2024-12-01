@@ -30,6 +30,56 @@ class PurchaseService:
         
         return result, 200
     
+    @staticmethod 
+    def get_purchase_by_id(purchase_id):
+        purchase = PurchaseRepository.get_purchase_by_id_with_details_and_audios(purchase_id)
+    
+        if not purchase:
+            return {"message": f"Venta con id {purchase_id} no encontrada"}, 404
+        
+        purchase_data = purchase.to_dict()
+        total = 0
+
+        purchase_data["purchase_details"] = []
+
+        # Recorrer los detalles de la compra
+        for detail in purchase.purchase_details:
+            detail_data = detail.to_dict()
+            item_data = detail.item.to_dict()
+
+            # Si el ítem tiene un audio
+            if detail.item.audio:
+                audio_data = detail.item.audio.to_dict()
+                audio_file = AudioService.get_audio_file_from_gridfs(detail.item.audio.file_name)
+                audio_data["file_url"] = (
+                    f"{ConfigService.current_url}/audios/file/{detail.item.audio.file_name}"
+                    if audio_file
+                    else None
+                )
+                item_data["audio"] = audio_data
+                item_data["audio"]["audio_name"] = detail.item.audio.audio_name
+
+                # Agregar la información del creador del audio
+                if detail.item.audio.creator and detail.item.audio.creator.user and detail.item.audio.creator.user.user_detail:
+                    audio_data["creator"] = {
+                        "username": detail.item.audio.creator.user.user_detail.username
+                    }
+                else:
+                    audio_data["creator"] = None
+            else:
+                item_data["audio"] = None
+
+            # Acumulando el total
+            total += detail.item.price
+            
+            # Asociamos el item a los detalles
+            detail_data["item"] = item_data
+            purchase_data["purchase_details"].append(detail_data)
+
+        purchase_data["total"] = total
+
+        return purchase_data, 200
+    
     @staticmethod
     def create_purchase(data):
         try: 
@@ -40,7 +90,7 @@ class PurchaseService:
             if not validation:
                 return {"message":msg}, 400
             
-            purchase_id = data.get("purchase_ID")
+            #purchase_id = data.get("purchase_ID")
             buyer_id = data.get("buyer_ID")
             flow_type = data.get("flow_type")
             payment_method = data.get("payment_method")
@@ -48,7 +98,7 @@ class PurchaseService:
 
             with db.session.begin():
 
-                purchase = PurchaseRepository.create_purchase(purchase_id, buyer_id, flow_type, payment_method)
+                purchase = PurchaseRepository.create_purchase(buyer_id, flow_type, payment_method)
 
                 for item_data in items:
                     audio_id = item_data.get("audio_ID")
@@ -117,6 +167,13 @@ class PurchaseService:
                         else None
                     )
                     item_data["audio"] = audio_data
+                    item_data["audio"]["audio_name"] = detail.item.audio.audio_name
+
+                    if(detail.item.audio.creator and detail.item.audio.creator.user and detail.item.audio.creator.user.user_detail):
+                        audio_data["creator"] = { "username": detail.item.audio.creator.user.user_detail.username }
+                    else:
+                        audio_data["creator"] = None
+
                 else:
                     item_data["audio"] = None
 

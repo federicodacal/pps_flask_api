@@ -29,8 +29,6 @@ class CreatorRepository:
             user_ID=data['ID'],
             subscription_ID=data['subscription_ID'],
             profile=data['profile'],
-            points=data['points'],
-            credits=data['credits'],
             created_at=datetime.datetime.now(datetime.timezone.utc),
             modified_at=datetime.datetime.now(datetime.timezone.utc),
         )

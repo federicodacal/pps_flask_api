@@ -222,7 +222,6 @@ class UserService:
                 "message":f"El creador {creator_id} y sus audios ahora están '{updated_state}'",
                 "updated_creator": updated_creator.to_dict() if updated_creator else None,
                 "audios": updated_audios if updated_audios else None,
-                "deactivation_email": deactivation_email if deactivation_email else None
             }, 200
 
         except Exception as e:

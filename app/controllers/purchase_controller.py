@@ -9,6 +9,11 @@ class PurchaseController:
         return jsonify(response), status_code
     
     @staticmethod
+    def get_purchase_by_id(purchase_id):
+        response, status_code = PurchaseService.get_purchase_by_id(purchase_id)
+        return jsonify(response), status_code
+    
+    @staticmethod
     def create_purchase():
         data = request.json or {}
         response, status_code = PurchaseService.create_purchase(data)
