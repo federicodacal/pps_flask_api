@@ -62,3 +62,14 @@ class CreatorRepository:
         creator.modified_at = datetime.datetime.now(datetime.timezone.utc) 
 
         return creator
+    
+    @staticmethod
+    def add_credits_to_creator(ID, credits):
+        creator = Creator.query.get(ID)
+        if not creator:
+            return None
+        
+        creator.credits += credits
+        creator.modified_at = datetime.datetime.now(datetime.timezone.utc)
+       
+        return creator

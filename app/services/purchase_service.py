@@ -1,3 +1,4 @@
+from ..repositories.creator_repository import CreatorRepository
 from ..services.mail_service import MailService
 from ..repositories.audio_repository import AudioRepository
 from ..services.audio_service import AudioService
@@ -104,7 +105,7 @@ class PurchaseService:
                     audio_id = item_data.get("audio_ID")
                     creator_id = item_data.get("creator_ID")
                     item_id = item_data.get("item_ID")
-                    #price = item_data.get("price")
+                    price = item_data.get("price")
 
                     #if not audio_id or not creator_id or not item_id or not price:
                     #    raise ValueError("Cada ítem incluir item_ID, audio_ID, creator_ID y price")
@@ -121,6 +122,8 @@ class PurchaseService:
 
                     PurchaseDetailRepository.create_purchase_detail(purchase.ID, item_id)
 
+                    CreatorRepository.add_credits_to_creator(creator_id, price)
+
                     match audio.category:
                         case 'sample':
                             AudioRepository.add_points_to_audio(audio.ID, 25)
@@ -128,6 +131,8 @@ class PurchaseService:
                             AudioRepository.add_points_to_audio(audio.ID, 30)
                         case 'effect':
                             AudioRepository.add_points_to_audio(audio.ID, 10)
+                        case _:
+                            AudioRepository.add_points_to_audio(audio.ID, 5)
 
             db.session.commit()
 
