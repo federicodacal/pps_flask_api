@@ -33,6 +33,7 @@ class AuthService:
 
             user_data = user 
             user_data["user_detail"] = user.get("user_detail")  
+            user_data["creator"] = user.get("creator") if user.get("creator") else None 
 
             payload = {
                 "ID": user_data["ID"],
@@ -40,6 +41,7 @@ class AuthService:
                 "type": user_data["type"],
                 "full_name": user_data["user_detail"]["full_name"],
                 "username": user_data["user_detail"]["username"],
+                "creator_ID": user_data["creator"]["ID"] if user_data["creator"] else None
             }
 
             print("Payload: ")

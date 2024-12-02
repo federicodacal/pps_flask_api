@@ -22,7 +22,7 @@ class UserRepository:
     
     @staticmethod
     def get_user_by_email_with_details(email):
-        return User.query.options(joinedload(User.user_detail)).filter_by(email=email).first() #type: ignore
+        return User.query.options(joinedload(User.user_detail),joinedload(User.creator)).filter_by(email=email).first() #type: ignore
     
     @staticmethod
     def get_user_by_username_with_details(username):
