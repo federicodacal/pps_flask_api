@@ -73,3 +73,14 @@ class CreatorRepository:
         creator.modified_at = datetime.datetime.now(datetime.timezone.utc)
        
         return creator
+    
+    @staticmethod
+    def add_points_to_creator(ID, points):
+        creator = Creator.query.get(ID)
+        if not creator:
+            return None
+        
+        creator.points += points
+        creator.modified_at = datetime.datetime.now(datetime.timezone.utc)
+       
+        return creator

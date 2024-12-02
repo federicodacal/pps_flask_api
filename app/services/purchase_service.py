@@ -1,3 +1,4 @@
+from ..repositories.user_repository import UserRepository
 from ..repositories.creator_repository import CreatorRepository
 from ..services.mail_service import MailService
 from ..repositories.audio_repository import AudioRepository
@@ -91,15 +92,21 @@ class PurchaseService:
             if not validation:
                 return {"message":msg}, 400
             
-            #purchase_id = data.get("purchase_ID")
             buyer_id = data.get("buyer_ID")
             flow_type = data.get("flow_type")
             payment_method = data.get("payment_method")
-            items = data.get("items", [])            
+            items = data.get("items", [])          
 
             with db.session.begin():
 
                 purchase = PurchaseRepository.create_purchase(buyer_id, flow_type, payment_method)
+
+                buyer = UserRepository.get_user_by_id_with_details(buyer_id)
+                buyer_email = buyer.to_dict()["email"] if buyer else None
+
+                purchase_details = []
+
+                creators_data = {}
 
                 for item_data in items:
                     audio_id = item_data.get("audio_ID")
@@ -109,6 +116,9 @@ class PurchaseService:
 
                     #if not audio_id or not creator_id or not item_id or not price:
                     #    raise ValueError("Cada ítem incluir item_ID, audio_ID, creator_ID y price")
+
+                    if PurchaseDetailRepository.has_bought_audio(buyer_id, audio_id):
+                        raise APIException(f"El comprador ya adquirió el audio con ID {audio_id}", status_code=400, error_type="Duplicate Purchase")
                     
                     audio = AudioRepository.get_audio_by_id_with_item(audio_id)
                     if not audio:
@@ -119,22 +129,54 @@ class PurchaseService:
                     
                     if audio.item.ID != item_id:
                         raise APIException(f"El audio con ID {audio_id} no corresponde al item con ID {item_id}", status_code=400, error_type="Integrity Error")
+                    
+                    purchase_details.append({
+                        "audio_name": audio.audio_name,
+                        "price": price
+                    })
+
+                    if creator_id not in creators_data:
+                        creator = CreatorRepository.get_creator_by_id(creator_id)
+                        if not creator:
+                            raise APIException(f"El creador con ID {creator_id} no existe", status_code=404, error_type="Value Error")
+                        
+                        if creator.user.ID == buyer_id:
+                            raise APIException(f"No se permite que un creador compre sus propios audios", status_code=404, error_type="Value Error")
+                        
+                        creators_data[creator_id] = {
+                            "email": creator.user.email if creator.user else None,
+                            "audios": []
+                        }
+
+                        creators_data[creator_id]["audios"].append({
+                            "name": audio.audio_name,
+                            "price": price
+                        })
 
                     PurchaseDetailRepository.create_purchase_detail(purchase.ID, item_id)
-
                     CreatorRepository.add_credits_to_creator(creator_id, price)
 
                     match audio.category:
                         case 'sample':
-                            AudioRepository.add_points_to_audio(audio.ID, 25)
+                            sample_points = 25
+                            AudioRepository.add_points_to_audio(audio.ID, sample_points)
+                            CreatorRepository.add_points_to_creator(creator_id, sample_points)
                         case 'acapella':
-                            AudioRepository.add_points_to_audio(audio.ID, 30)
+                            acapella_points = 30
+                            AudioRepository.add_points_to_audio(audio.ID, acapella_points)
+                            CreatorRepository.add_points_to_creator(creator_id, acapella_points)
                         case 'effect':
-                            AudioRepository.add_points_to_audio(audio.ID, 10)
+                            effect_points = 10
+                            AudioRepository.add_points_to_audio(audio.ID, effect_points)
+                            CreatorRepository.add_points_to_creator(creator_id, effect_points)
                         case _:
                             AudioRepository.add_points_to_audio(audio.ID, 5)
+                            CreatorRepository.add_points_to_creator(creator_id, 5)   
 
-            db.session.commit()
+                MailService.send_purchase_email_to_buyer(buyer_email, purchase_details)
+
+                for creator_id, creator_info in creators_data.items():
+                    MailService.send_purchase_email_to_creators(creator_info)
 
             return {"purchase_id": purchase.ID}, 200
         

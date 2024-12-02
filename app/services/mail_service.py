@@ -116,4 +116,28 @@ class MailService:
         msg, status = MailService.send_email(user["email"], subject, body)
         return msg, status
     
+    @staticmethod
+    def send_purchase_email_to_buyer(buyer_email, purchase_details):
+        subject = "Confirmación de tu compra - AudioLibre"
+        body = "Gracias por tu compra en AudioLibre. Aquí están los detalles de tu compra:\n\n"
+
+        for detail in purchase_details:
+            body += f" - {detail['audio_name']}: ${detail['price']}\n"
+
+        body += "\nEsperamos que disfrutes tu compra.\n\nAudioLibre"
+
+        msg, status = MailService.send_email(buyer_email, subject, body)
+        return msg, status
     
+    @staticmethod
+    def send_purchase_email_to_creators(creator_info):
+        subject = "Notificación de venta de tus audios - AudioLibre"
+        body = f"Hola,\n\nSe han vendido los siguientes audios asociados a tu cuenta:\n\n"
+
+        for audio in creator_info["audios"]:
+            body += f" - {audio['name']}: ${audio['price']}\n"
+
+        body += "\nGracias por ser parte de AudioLibre.\n\nAudioLibre"
+
+        msg, status = MailService.send_email(creator_info["email"], subject, body)
+        return msg, status
