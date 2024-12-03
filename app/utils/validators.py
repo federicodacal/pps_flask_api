@@ -43,10 +43,12 @@ def validate_username(username, action, current_user):
             return False, f"El username {username} ya se ha registrado"
         
     elif action == 'update':
-        username_exists = UserRepository.get_user_by_username_with_details(username)
+        current_username = current_user.get("username")
+        if username != current_username:
+            username_exists = UserRepository.get_user_by_username_with_details(username)
 
-        if username_exists is not None and username_exists.ID != current_user.get("ID"):
-            return False, f"El username {username} ya se ha registrado"
+            if username_exists is not None and username_exists.ID != current_user.get("ID"):
+                return False, f"El username {username} ya se ha registrado"
     
     return True, ""
 
