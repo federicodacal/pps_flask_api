@@ -162,8 +162,33 @@ class ReportsRepository:
         top_creators_by_points = db.session.query(Creator.ID, User_detail.username, User_detail.full_name, Creator.points).join(User, User.ID == Creator.user_ID).join(User_detail, User.user_detail_ID == User_detail.ID).order_by(desc(Creator.points)).limit(5).all() #type: ignore
 
         result = [
-            {"creator": row.ID, "points": row.points}
+            {
+                "creator": row.ID, "points": row.points,
+                "username": row.username,
+                "full_name": row.full_name,
+            }
             for row in top_creators_by_points
         ]
         return  result
     
+    @staticmethod
+    def get_top_creators_by_purchases():
+        top_creators_by_sales = db.session.query(
+            Creator.ID, # type: ignore
+            User_detail.username, # type: ignore
+            User_detail.full_name, # type: ignore
+            func.sum(Item.price).label("total_sales")  # type: ignore
+        ).join(Audio, Audio.creator_ID == Creator.ID).join(Item, Item.audio_ID == Audio.ID).join(Purchase_detail, Purchase_detail.item_ID == Item.ID).join(User, User.ID == Creator.user_ID).join(User_detail, User.user_detail_ID == User_detail.ID).group_by(Creator.ID, User_detail.username, User_detail.full_name).order_by(desc("total_sales")).limit(5).all() # type: ignore
+        
+        result = [
+            {
+                "creator": row.ID,
+                "username": row.username,
+                "full_name": row.full_name,
+                "total_sales": row.total_sales
+            }
+            for row in top_creators_by_sales
+        ]
+    
+        return result
+            

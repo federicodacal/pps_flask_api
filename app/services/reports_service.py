@@ -46,7 +46,9 @@ class ReportsService:
     @staticmethod
     def get_report_creators():
         top_creators_by_points = ReportsRepository.get_top_creators_by_points()
+        top_creators_by_purchases = ReportsRepository.get_top_creators_by_purchases()
 
         return {
-            "top_creators_by_points": top_creators_by_points
+            "top_creators_by_points": top_creators_by_points,
+            "top_creators_by_purchases": top_creators_by_purchases
         }, 200
