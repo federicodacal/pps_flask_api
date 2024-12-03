@@ -164,6 +164,7 @@ class UserService:
             
             updated_user = UserRepository.update_state_user(user_id, updated_state)
 
+            updated_creator = None
             if(user.type == 'creator'):
                 creator = CreatorRepository.get_creator_by_user_id(user_id)
                 if creator is not None:
