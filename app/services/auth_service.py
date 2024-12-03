@@ -2,6 +2,7 @@ from datetime import timedelta
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, verify_jwt_in_request
 from ..services.user_service import UserService
 from ..utils.token_manager import revoke_token
+from werkzeug.security import check_password_hash
 
 class AuthService:
 
@@ -24,37 +25,35 @@ class AuthService:
         if user is None:
             return {"message": f"Usuario con email {email} no encontrado"}, 404
 
-        # DESENCRIPTAR PWD
-
-        if not password == user["pwd"]:
+        if not check_password_hash(user["pwd"], password):
             return {"message": "No autorizado"}, 401
-        else:
-            expires_in = timedelta(minutes=30)
 
-            user_data = user 
-            user_data["user_detail"] = user.get("user_detail")  
-            user_data["creator"] = user.get("creator") if user.get("creator") else None 
+        expires_in = timedelta(minutes=30)
 
-            payload = {
-                "ID": user_data["ID"],
-                "email": user_data["email"],
-                "type": user_data["type"],
-                "full_name": user_data["user_detail"]["full_name"],
-                "username": user_data["user_detail"]["username"],
-                "creator_ID": user_data["creator"]["ID"] if user_data["creator"] else None
-            }
+        user_data = user 
+        user_data["user_detail"] = user.get("user_detail")  
+        user_data["creator"] = user.get("creator") if user.get("creator") else None 
 
-            print("Payload: ")
-            print(payload)
-            print("\n")
+        payload = {
+            "ID": user_data["ID"],
+            "email": user_data["email"],
+            "type": user_data["type"],
+            "full_name": user_data["user_detail"]["full_name"],
+            "username": user_data["user_detail"]["username"],
+            "creator_ID": user_data["creator"]["ID"] if user_data["creator"] else None
+        }
 
-            token = create_access_token(identity=payload, expires_delta=expires_in)
-            
-            return {
-                "message": "Token creado con éxito",
-                "token": token,
-                "status_code": 200
-            }, 200
+        print("Payload: ")
+        print(payload)
+        print("\n")
+
+        token = create_access_token(identity=payload, expires_delta=expires_in)
+        
+        return {
+            "message": "Token creado con éxito",
+            "token": token,
+            "status_code": 200
+        }, 200
     
     @staticmethod
     @jwt_required()
