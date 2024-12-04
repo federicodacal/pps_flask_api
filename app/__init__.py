@@ -3,6 +3,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
+
 from .databases.mongodb import init_gridfs
 from .databases.db import db, migrate 
 from .routes.user_routes import user_routes
@@ -10,6 +11,7 @@ from .routes.audio_routes import audio_routes
 from .routes.favorites_routes import favorites_routes
 from .routes.purchase_routes import purchase_routes
 from .routes.auth_routes import auth_routes
+from .routes.reports_routes import reports_routes
 from .middlewares.api_exception import APIException, handle_api_exceptions, handle_general_exceptions
 from dotenv import load_dotenv
 from .utils.token_manager import is_token_revoked
@@ -54,6 +56,7 @@ app.register_blueprint(audio_routes)
 app.register_blueprint(favorites_routes)
 app.register_blueprint(purchase_routes)
 app.register_blueprint(auth_routes)
+app.register_blueprint(reports_routes)
 
 # Importar modelos después de definir la app
 from .models.user import User
