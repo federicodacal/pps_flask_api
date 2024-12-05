@@ -68,6 +68,8 @@ from .models.favorites import Favorite
 from .models.creator import Creator
 from .models.audio import Audio
 from .models.account import Account
+from .models.subscription import Subscription
+from .models.subscription_billing import Subscription_billing
  
 # Configuración del logging
 if not app.debug:

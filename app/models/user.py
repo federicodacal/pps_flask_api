@@ -9,7 +9,7 @@ class User(db.Model):
 
     ID = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_detail_ID = db.Column(db.String(50), db.ForeignKey('users_details.ID'), nullable=False)
-    email = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False, unique=True)
     pwd = db.Column(db.String(255), nullable=False)
     type = db.Column(db.String(25), nullable=False)
     state = db.Column(db.String(50), nullable=False)
