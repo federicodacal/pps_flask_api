@@ -1,4 +1,8 @@
+import datetime
 from werkzeug.security import generate_password_hash
+
+from ..repositories.subscription_repository import SubscriptionRepository
+from ..repositories.subscription_billing_repository import SubscriptionBillingRepository
 from ..repositories.audio_repository import AudioRepository
 from ..repositories.item_repository import ItemRepository
 from ..services.audio_service import AudioService
@@ -87,6 +91,20 @@ class UserService:
 
                     new_account = AccountRepository.create_account(data)
 
+                    print('hola')
+                    subscription = SubscriptionRepository.get_subscription_by_id(data["subscription_ID"])
+                    print('chau')
+                    print(f'sub: {subscription}')
+
+                    if not subscription:
+                        raise APIException('No se encontró la subscripción', status_code=400, error_type="Integrity Error")   
+                    
+                    data["last_payment_date"] = None
+                    data["next_payment_date"] = datetime.datetime.now() + datetime.timedelta(days=subscription.renewal_time_in_days) 
+                    data["account_ID"] = new_account.ID
+
+                    new_subscription_billing = SubscriptionBillingRepository.create_subscription_billing(data)
+
             db.session.commit()
 
             confirmation_email, status_code = MailService.send_confirmation_email(new_user.email, new_user_detail.full_name, new_user.ID)
@@ -96,7 +114,8 @@ class UserService:
                 "user_detail": new_user_detail.to_dict(),
                 "creator": new_creator.to_dict() if new_creator else None,
                 "account": new_account.to_dict() if new_account else None,
-                "confirmation_email": confirmation_email if confirmation_email else None
+                "confirmation_email": confirmation_email if confirmation_email else None,
+                "new_subscription_billing": new_subscription_billing.to_dict() if new_subscription_billing else None
             }, 200
         
         except APIException as aex:
