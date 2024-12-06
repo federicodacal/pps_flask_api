@@ -92,10 +92,7 @@ class UserService:
 
                     new_account = AccountRepository.create_account(data)
 
-                    print('hola')
                     subscription = SubscriptionRepository.get_subscription_by_id(data["subscription_ID"])
-                    print('chau')
-                    print(f'sub: {subscription}')
 
                     if not subscription:
                         raise APIException('No se encontró la subscripción', status_code=400, error_type="Integrity Error")   

@@ -6,8 +6,9 @@ class SubscriptionService:
 
     @staticmethod
     def get_all_subscriptions():
-        subs = SubscriptionRepository.get_all_subscriptions()
-        return subs, 200
+        subscriptions = SubscriptionRepository.get_all_subscriptions()
+        subscriptions_dict = [sub.to_dict() for sub in subscriptions]
+        return subscriptions_dict, 200
 
     @staticmethod
     def get_subscription_by_id(subscription_id):
