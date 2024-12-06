@@ -14,7 +14,7 @@ class Audio(db.Model):
     category = db.Column(db.String(50), nullable=False)
     genre = db.Column(db.String(50), nullable=False)
     BPM = db.Column(db.Integer, nullable=False)
-    tone = db.Column(db.Integer, nullable=False)
+    tone = db.Column(db.String(20), nullable=False)
     length = db.Column(db.Integer, nullable=False)
     size = db.Column(db.Integer, nullable=False)
     score = db.Column(db.Integer, nullable=False, default=0)

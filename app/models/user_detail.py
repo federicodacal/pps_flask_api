@@ -7,7 +7,7 @@ class User_detail(db.Model):
     __tablename__= 'users_details'
 
     ID = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
-    personal_ID = db.Column(db.Integer, nullable=False)
+    personal_ID = db.Column(db.BigInteger, nullable=False)
     username = db.Column(db.String(50), nullable=False, unique=True)
     full_name = db.Column(db.String(50), nullable=False)
     phone_number = db.Column(db.String(50), nullable=False)
