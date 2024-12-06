@@ -9,7 +9,7 @@ class Creator(db.Model):
 
     ID = db.Column(db.String(50), primary_key=True, default=lambda: str(uuid.uuid4()))
     user_ID = db.Column(db.String(50), db.ForeignKey('users.ID'), nullable=False)
-    subscription_ID = db.Column(db.Integer, nullable=False)
+    subscription_ID = db.Column(db.String(50), nullable=False)
     profile = db.Column(db.String(200), nullable=False)
     points = db.Column(db.Integer, nullable=False)
     credits = db.Column(db.Integer, nullable=False)
