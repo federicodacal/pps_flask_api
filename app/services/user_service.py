@@ -79,6 +79,7 @@ class UserService:
 
                 new_creator = None
                 new_account = None
+                new_subscription_billing = None
 
                 if data.get('type') == 'creator':
 
