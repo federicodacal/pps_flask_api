@@ -1,5 +1,7 @@
 from datetime import timedelta
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, verify_jwt_in_request
+
+from ..repositories.user_repository import UserRepository
 from ..services.user_service import UserService
 from ..utils.token_manager import revoke_token
 from werkzeug.security import check_password_hash
@@ -20,19 +22,23 @@ class AuthService:
         email = data["email"]
         password = data["pwd"]
 
-        user = UserService.get_user_by_email(email)
+        user = UserRepository.get_user_by_email_with_details(email)
 
         if user is None:
             return {"message": f"Usuario con email {email} no encontrado"}, 404
 
-        if not check_password_hash(user["pwd"], password):
+        if not check_password_hash(user.pwd, password):
             return {"message": "No autorizado"}, 401
 
         expires_in = timedelta(minutes=30)
 
-        user_data = user 
-        user_data["user_detail"] = user.get("user_detail")  
-        user_data["creator"] = user.get("creator") if user.get("creator") else None 
+        user_data = {
+            "ID": user.ID,
+            "email": user.email,
+            "type": user.type,
+            "user_detail": user.user_detail.to_dict() if user.user_detail else None,
+            "creator": user.creator.to_dict() if user.creator else None
+        }
 
         payload = {
             "ID": user_data["ID"],
@@ -42,10 +48,6 @@ class AuthService:
             "username": user_data["user_detail"]["username"],
             "creator_ID": user_data["creator"]["ID"] if user_data["creator"] else None
         }
-
-        print("Payload: ")
-        print(payload)
-        print("\n")
 
         token = create_access_token(identity=payload, expires_delta=expires_in)
         
