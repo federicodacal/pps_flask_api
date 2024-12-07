@@ -15,6 +15,16 @@ class UserController:
         return jsonify(response), status_code
     
     @staticmethod
+    def get_user_by_email(user_email):
+        response, status_code = UserService.get_user_by_email(user_email)
+        return jsonify(response), status_code
+
+    @staticmethod
+    def get_user_by_username(user_username):
+        response, status_code = UserService.get_user_by_username(user_username)
+        return jsonify(response), status_code
+    
+    @staticmethod
     def create_user():
         data = request.json or {}
         response, status_code = UserService.create_user(data)

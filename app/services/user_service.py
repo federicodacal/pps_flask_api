@@ -51,13 +51,28 @@ class UserService:
     @staticmethod
     def get_user_by_email(email):
         user = UserRepository.get_user_by_email_with_details(email)
+
         if user is None:
-            return None        
+            return {"message": f"Usuario con email {email} no encontrado"}, 404    
+            
         user_data = user.to_dict()
         user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
         user_data["creator"] = user.creator.to_dict() if user.creator else None
 
-        return user_data
+        return user_data, 200
+    
+    @staticmethod
+    def get_user_by_username(username):
+        user = UserRepository.get_user_by_username_with_details(username)
+
+        if user is None:
+            return {"message": f"Usuario con username {username} no encontrado"}, 404    
+            
+        user_data = user.to_dict()
+        user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
+        user_data["creator"] = user.creator.to_dict() if user.creator else None
+
+        return user_data, 200
 
     @staticmethod
     def create_user(data):
