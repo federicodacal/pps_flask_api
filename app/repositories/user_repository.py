@@ -4,6 +4,7 @@ from sqlalchemy import text
 from ..models.user_detail import User_detail
 from ..databases.db import db
 from ..models.user import User
+from ..models.creator import Creator
 from sqlalchemy.orm import joinedload
 
 class UserRepository:
@@ -18,7 +19,7 @@ class UserRepository:
 
     @staticmethod
     def get_user_by_id_with_details(user_id):
-        return User.query.options(joinedload(User.user_detail)).filter_by(ID=user_id).first() # type: ignore
+        return User.query.options(joinedload(User.user_detail),joinedload(User.creator).joinedload(Creator.account)).filter_by(ID=user_id).first() # type: ignore
     
     @staticmethod
     def get_user_by_email_with_details(email):

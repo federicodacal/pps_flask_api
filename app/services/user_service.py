@@ -41,6 +41,10 @@ class UserService:
         user_data = user.to_dict()
         user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
         user_data["creator"] = user.creator.to_dict() if user.creator else None
+        if user.creator and user.creator.account:
+            user_data["creator"]["account"] = user.creator.account.to_dict()
+        else:
+            user_data["account"] = None
 
         return user_data, 200
     

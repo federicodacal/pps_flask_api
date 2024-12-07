@@ -33,7 +33,7 @@ class AudioService:
     
     @staticmethod
     def get_audio_by_id(audio_id):
-        audio = AudioRepository.get_audio_by_id_with_item(audio_id)
+        audio = AudioRepository.get_audio_by_id_with_item_and_creator(audio_id)
 
         if audio is None:
             return {"message": f"Audio con id {audio_id} no encontrado"}, 404
@@ -43,6 +43,14 @@ class AudioService:
 
         audio_data["item"] = audio.item.to_dict() if audio.item else None
         audio_data["file_url"] = f"{ConfigService.current_url}/audios/file/{audio.file_name}" if audio_file else None
+        if audio.creator and audio.creator.user and audio.creator.user.user_detail:
+            user_detail = audio.creator.user.user_detail
+            audio_data["creator"] = {
+                "username": user_detail.username,
+                "full_name": user_detail.full_name
+            }
+        else:
+            audio_data["creator"] = None
 
         return audio_data, 200
     
