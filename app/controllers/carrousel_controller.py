@@ -1,5 +1,6 @@
 import datetime
-from io import BytesIO
+import io
+from PIL import Image
 from bson import ObjectId
 from flask import Response, jsonify, request, send_file
 from flask import current_app
@@ -64,13 +65,17 @@ class CarrouselController:
             return {"message": "Imagen no encontrada"}, 404 
 
         file_data = file.read()
+        mimetype = file.content_type if file.content_type else 'image/jpeg'
+
+        if 'image' not in mimetype:
+            mimetype = 'image/jpeg'
  
-        return Response(file_data, mimetype=file.content_type)
+        return Response(file_data, mimetype=mimetype)
     
     @staticmethod
     def create_carrousel():
         mongo = current_app.config['MONGODB']
-        grid_fs = current_app.config['GRID_FS']
+        grid_fs = GridFS(mongo, collection="images")
 
         data = request.form
         file = request.files.get('file')
@@ -86,7 +91,19 @@ class CarrouselController:
             return {"message": "El archivo no es una imagen válida"}, 400
 
         try:
-            file_id = grid_fs.put(file, filename=file.filename)
+
+            image = Image.open(file.stream)
+            image = image.convert("RGB")
+
+            img_data = list(image.getdata())
+            image_no_meta = Image.new(image.mode, image.size)
+            image_no_meta.putdata(img_data)
+
+            image_io = io.BytesIO()
+            image_no_meta.save(image_io, 'JPEG', quality=50)
+            image_io.seek(0)
+            
+            file_id = grid_fs.put(image_io, filename=file.filename)
 
             next_id = get_next_sequence('carrousel_id')
             carrousel_id = mongo.carrouselmodels.insert_one({
@@ -116,8 +133,8 @@ class CarrouselController:
         mongo.carrouselmodels.update_one(
             {"id": carrousel_id_int},
             {"$set": {
-                "titulo": data.get('titulo', carrousel['titulo']), 
-                "descripcion": data.get('descripcion', carrousel['descripcion']), 
+                "titulo": data.get('titulo', carrousel_id['titulo']), 
+                "descripcion": data.get('descripcion', carrousel_id['descripcion']), 
                 "fecha_modificacion": datetime.datetime.now() }
             }  
         )
