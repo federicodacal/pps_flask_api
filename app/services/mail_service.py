@@ -88,11 +88,11 @@ class MailService:
         return msg, status
     
     @staticmethod
-    def send_debt_notice_email(user_email, full_name):
+    def send_debt_notice_email(user_email):
         link = f"{ConfigService.current_url}"
         subject = "Suscripción impaga - AudioLibre"
         body = f"""
-        {full_name}, nos comunicamos para dar aviso que tu subscripción se encuentra impago.
+        Nos comunicamos para dar aviso que tu subscripción se encuentra impago.
         En caso de no renovar en 60 días su usuario se dará de baja y sus audios dejarán de estar disponibles en la plataforma.
         {link}
 

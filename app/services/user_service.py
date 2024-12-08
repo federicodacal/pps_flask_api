@@ -264,25 +264,32 @@ class UserService:
             
             updated_creator = CreatorRepository.update_state_creator(creator_id, updated_state)
 
-            updated_audios = []
-            for audio in creator.audios:
-                AudioRepository.update_state_audio(audio.ID,updated_state)
-                ItemRepository.update_state_item(audio.item.ID, updated_state)               
-                audio_data = audio.to_dict()
-            
-                audio_data["item"] = audio.item.to_dict() if audio.item else None
-                updated_audios.append(audio_data)
-
-            db.session.commit()
-
             if updated_state == 'inactive':
+
+                updated_audios = []
+                for audio in creator.audios:
+                    AudioRepository.update_state_audio(audio.ID,updated_state)
+                    ItemRepository.update_state_item(audio.item.ID, updated_state)               
+                    audio_data = audio.to_dict()
+                
+                    audio_data["item"] = audio.item.to_dict() if audio.item else None
+                    updated_audios.append(audio_data)
+
                 user = UserRepository.get_user_by_id_with_details(creator.user_ID)
 
                 if user is not None:
                     user_data = user.to_dict()
                     user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
 
-                    deactivation_email, status = MailService.send_deactivation_email(user_data)
+                    MailService.send_deactivation_email(user_data)
+            
+            if updated_state == 'debtor':
+                user = UserRepository.get_user_by_id_with_details(creator.user_ID)
+
+                if user is not None:
+                    MailService.send_debt_notice_email(user.email)
+
+            db.session.commit()
 
             return {
                 "message":f"El creador {creator_id} y sus audios ahora están '{updated_state}'",

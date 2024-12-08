@@ -34,3 +34,8 @@ class SubscriptionController:
     def inactivate_subscription(subscription_id):
         response, status_code = SubscriptionService.update_subscription_state(subscription_id, 'inactive')
         return jsonify(response), status_code
+    
+    @staticmethod
+    def evaluate_subscription_status_by_creator(creator_id):
+        response, status_code = SubscriptionService.evaluate_subscription_status_by_creator_id(creator_id)
+        return jsonify(response), status_code

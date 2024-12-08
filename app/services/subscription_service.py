@@ -1,3 +1,9 @@
+import datetime
+
+from ..services.user_service import UserService
+from ..services.mail_service import MailService
+from ..models.subscription_billing import Subscription_billing
+from ..repositories.creator_repository import CreatorRepository
 from ..databases.db import db
 from ..repositories.subscription_repository import SubscriptionRepository
 
@@ -44,3 +50,33 @@ class SubscriptionService:
     @staticmethod
     def update_subscription_state(subscription_id, updated_state):
         return f'Update subscription state {updated_state}', 200
+    
+    @staticmethod 
+    def evaluate_subscription_status_by_creator_id(creator_id):
+        try: 
+            creator = CreatorRepository.get_creator_by_id(creator_id)
+
+            if not creator:
+                return {"message": f"Creador con id {creator_id} no encontrado"}, 404
+            
+            account = creator.account
+            if not account:
+                return {"message": f"Cuenta de creador {creator_id} no encontrada"}, 404
+            
+            subscription_billing = Subscription_billing.query.filter_by(account_ID=account.ID).first()
+            if not subscription_billing:
+                return {"message": f"Cobro de subscrición para la cuenta con id {account.ID} no encontrada."}, 404
+
+            today = datetime.datetime.now()
+            next_payment_date = subscription_billing.next_payment_date
+
+            if next_payment_date < today:
+                days_overdue = (today - next_payment_date).days
+
+                if(days_overdue > 30):
+                    UserService.update_creator_state(creator.ID, 'debtor')
+                elif(days_overdue > 60):
+                    UserService.update_creator_state(creator.ID, 'inactive')
+
+        except Exception as e:
+            return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500    
