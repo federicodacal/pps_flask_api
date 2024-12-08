@@ -155,26 +155,54 @@ class UserService:
             validation, msg = validate_user(data, action="update")
             if not validation:
                 return {"message":msg}, 400
+            
+            new_type = data.get('type')
+            current_type = user.type
 
             updated_user_detail = UserDetailRepository.update_user_detail(user.user_detail_ID, data)
             updated_user = UserRepository.update_user(user.ID, data)
             updated_creator = None
             updated_account = None
 
-            if data.get('type') == 'creator':
-                creator = CreatorRepository.get_creator_by_user_id(user.ID)
+            if current_type != new_type:
 
-                validation, msg = validate_creator(data)
-                if not validation:
-                    return {"message":msg}, 400
+                if current_type == 'creator' and new_type == 'buyer':
+                    creator = CreatorRepository.get_creator_by_user_id(user.ID)
+                    if creator:
+                        CreatorRepository.update_state_creator(creator.ID, 'inactive')
+                
+                elif current_type == 'buyer' and new_type == 'creator':
 
-                if creator:
-                    updated_creator = CreatorRepository.update_creator(creator.ID, data)
-                    updated_account = AccountRepository.update_account(creator.ID, data)
+                    creator = CreatorRepository.get_creator_by_user_id(user.ID)
 
-                else:
-                    updated_creator = CreatorRepository.create_creator(data)
-                    updated_account = AccountRepository.create_account(data)
+                    validation, msg = validate_creator(data) 
+                    if not validation:
+                        raise APIException(msg, status_code=400, error_type="Value Error")
+                    
+                    if creator:
+                        CreatorRepository.update_state_creator(creator.ID, 'active')
+
+                        updated_creator = CreatorRepository.update_creator(creator.ID, data)
+                        updated_account = AccountRepository.update_account(creator.ID, data)
+
+                    else:
+                        updated_creator = CreatorRepository.create_creator(data)
+                        updated_account = AccountRepository.create_account(data)
+
+                elif current_type == 'creator' and new_type == 'creator':
+
+                    creator = CreatorRepository.get_creator_by_user_id(user.ID)
+
+                    validation, msg = validate_creator(data) 
+                    if not validation:
+                        raise APIException(msg, status_code=400, error_type="Value Error")
+                    
+                    if creator:
+                        updated_creator = CreatorRepository.update_creator(creator.ID, data)
+                        updated_account = AccountRepository.update_account(creator.ID, data)
+                    else:
+                        updated_creator = CreatorRepository.create_creator(data)
+                        updated_account = AccountRepository.create_account(data) 
             
             db.session.commit()
             
