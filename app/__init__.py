@@ -2,6 +2,7 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_pymongo import PyMongo
 
 
 from .databases.mongodb import init_gridfs
@@ -11,6 +12,9 @@ from .routes.audio_routes import audio_routes
 from .routes.favorites_routes import favorites_routes
 from .routes.purchase_routes import purchase_routes
 from .routes.auth_routes import auth_routes
+from .routes.category_routes import category_routes
+from .routes.carrousel_routes import carrousel_routes
+from .routes.genre_routes import genre_routes
 from .routes.subscriptions_routes import subscription_routes
 from .routes.reports_routes import reports_routes
 from .middlewares.api_exception import APIException, handle_api_exceptions, handle_general_exceptions
@@ -58,6 +62,9 @@ app.register_blueprint(favorites_routes)
 app.register_blueprint(purchase_routes)
 app.register_blueprint(auth_routes)
 app.register_blueprint(subscription_routes)
+app.register_blueprint(genre_routes)
+app.register_blueprint(carrousel_routes)
+app.register_blueprint(category_routes)
 app.register_blueprint(reports_routes)
 
 # Importar modelos después de definir la app

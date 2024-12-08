@@ -2,6 +2,9 @@ from flask_pymongo import PyMongo
 from gridfs import GridFS
 
 def init_gridfs(app):
+
+    global mongo
+
     # Inicializar PyMongo 
     mongo = PyMongo(app)
 
@@ -9,6 +12,7 @@ def init_gridfs(app):
     grid_fs = None
     if mongo.db is not None:
         grid_fs = GridFS(mongo.db)
+        app.config['MONGODB'] = mongo.db
         app.config['GRID_FS'] = grid_fs
         return grid_fs
     else:
