@@ -1,3 +1,5 @@
+from ..models.subscription import Subscription
+from ..repositories.subscription_repository import SubscriptionRepository
 from ..repositories.user_repository import UserRepository
 from ..repositories.creator_repository import CreatorRepository
 from ..services.mail_service import MailService
@@ -74,7 +76,7 @@ class PurchaseService:
             # Acumulando el total
             total += detail.item.price
             
-            # Asociamos el item a los detalles
+            # Asociar el item a los detalles
             detail_data["item"] = item_data
             purchase_data["purchase_details"].append(detail_data)
 
@@ -154,7 +156,15 @@ class PurchaseService:
                         })
 
                     PurchaseDetailRepository.create_purchase_detail(purchase.ID, item_id)
-                    CreatorRepository.add_credits_to_creator(creator_id, price)
+
+                    subscription = SubscriptionRepository.get_subscription_by_id(creator.subscription_ID)
+                    if not subscription:
+                        raise APIException(f"La suscripción con ID {creator.subscription_ID} no existe", status_code=404, error_type="Value Error")
+                    
+                    revenue_percentage = subscription.revenue_percentage / 100
+                    credits = int(price * revenue_percentage)
+
+                    CreatorRepository.add_credits_to_creator(creator_id, credits)
 
                     match audio.category:
                         case 'sample':

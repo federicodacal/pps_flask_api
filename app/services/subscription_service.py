@@ -85,7 +85,7 @@ class SubscriptionService:
                 print("Days overdue:")
                 print(days_overdue)
 
-                if(days_overdue > 30):
+                if(days_overdue > 30 and days_overdue <= 59):
                     UserService.update_creator_state(creator.ID, 'debtor', days_overdue=days_overdue)
                 elif(days_overdue > 60):
                     UserService.update_creator_state(creator.ID, 'inactive')
