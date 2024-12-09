@@ -256,7 +256,7 @@ class UserService:
             return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
         
     @staticmethod
-    def update_creator_state(creator_id, updated_state):
+    def update_creator_state(creator_id, updated_state, days_overdue=None):
         try:
             creator = CreatorRepository.get_creator_with_audios(creator_id)
             if creator is None:
@@ -287,7 +287,10 @@ class UserService:
                 user = UserRepository.get_user_by_id_with_details(creator.user_ID)
 
                 if user is not None:
-                    MailService.send_debt_notice_email(user.email)
+                    user_data = user.to_dict()
+                    user_data["user_detail"] = user.user_detail.to_dict() if user.user_detail else None
+
+                    MailService.send_debt_notice_email(user_data, days_overdue)
 
             db.session.commit()
 

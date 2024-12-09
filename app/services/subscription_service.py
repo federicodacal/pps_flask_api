@@ -70,13 +70,43 @@ class SubscriptionService:
             today = datetime.datetime.now()
             next_payment_date = subscription_billing.next_payment_date
 
+            print("Next payment:")
+            print(next_payment_date)
+
+            print("Today:")
+            print(today)
+
             if next_payment_date < today:
                 days_overdue = (today - next_payment_date).days
 
+                print("Next payment:")
+                print(next_payment_date)
+
+                print("Days overdue:")
+                print(days_overdue)
+
                 if(days_overdue > 30):
-                    UserService.update_creator_state(creator.ID, 'debtor')
+                    UserService.update_creator_state(creator.ID, 'debtor', days_overdue=days_overdue)
                 elif(days_overdue > 60):
                     UserService.update_creator_state(creator.ID, 'inactive')
+
+                return {
+                    "creator_id": creator.ID,
+                    "account_id": account.ID,
+                    "subscription_billing_id": subscription_billing.ID,
+                    "next_payment_date": next_payment_date,
+                    "days_overdue": days_overdue,
+                    "message": f"Creador tiene deuda pendiente: {days_overdue} días"
+                }, 200
+            else:
+                return {
+                    "creator_id": creator.ID,
+                    "account_id": account.ID,
+                    "subscription_billing_id": subscription_billing.ID,
+                    "next_payment_date": next_payment_date,
+                    "days_overdue": 0,
+                    "message": "Creador no tiene deuda pendiente"
+                }, 200
 
         except Exception as e:
             return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500    
