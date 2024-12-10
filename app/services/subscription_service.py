@@ -1,5 +1,7 @@
 import datetime
 
+from flask import jsonify
+
 from ..services.user_service import UserService
 from ..services.mail_service import MailService
 from ..models.subscription_billing import Subscription_billing
@@ -19,7 +21,12 @@ class SubscriptionService:
     @staticmethod
     def get_subscription_by_id(subscription_id):
         sub = SubscriptionRepository.get_subscription_by_id(subscription_id)
-        return sub, 200
+
+        if not sub:
+            return {"message": "Subscripcion no encontrada"}, 404
+        
+        sub_dict = sub.to_dict()
+        return sub_dict, 200
     
     @staticmethod
     def create_subscription(data):
@@ -45,11 +52,30 @@ class SubscriptionService:
         
     @staticmethod
     def update_subscription(subscription_id, data):
-        return 'Update subscription', 200
+        subscription = SubscriptionRepository.get_subscription_by_id(subscription_id)
+        if not subscription:
+            return {"error": "Suscripcion no encontrada"}, 404
+
+        allowed_fields = ["renewal_time_in_days", "revenue_percentage", "monthly_price", "type"]
+        for field in allowed_fields:
+            if field in data:
+                setattr(subscription, field, data[field])
+
+        db.session.commit()
+
+        return {"subscription": subscription.to_dict() if subscription else None}, 200
     
     @staticmethod
     def update_subscription_state(subscription_id, updated_state):
-        return f'Update subscription state {updated_state}', 200
+        subscription = SubscriptionRepository.get_subscription_by_id(subscription_id)
+        if not subscription:
+            return {"error": "Suscripcion no encontrada"}, 404
+        
+        updated_subscription = SubscriptionRepository.update_state_subscription(subscription_id, updated_state)
+
+        db.session.commit()
+
+        return {"sub": updated_subscription.to_dict() if updated_subscription else None }, 200
     
     @staticmethod 
     def evaluate_subscription_status_by_creator_id(creator_id):
