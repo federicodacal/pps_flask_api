@@ -141,3 +141,31 @@ class MailService:
 
         msg, status = MailService.send_email(creator_info["email"], subject, body)
         return msg, status
+    
+    @staticmethod
+    def send_audio_approval_email(user):
+        link = f"{ConfigService.current_url}"
+        subject = "Aprobación de audio - AudioLibre"
+        body = f"""
+        {user["user_detail"]["full_name"]}, nos alegra comunicar que tu audio se encuentra habilitado.
+        {link}
+
+        AudioLibre
+        """
+
+        msg, status = MailService.send_email(user["email"], subject, body)
+        return msg, status
+    
+    @staticmethod
+    def send_audio_rejection_email(user):
+        link = f"{ConfigService.current_url}"
+        subject = "Rechazo de solicitud de audio - AudioLibre"
+        body = f"""
+        {user["user_detail"]["full_name"]}, lamentamos comunicarte que tu audio no cumple con las normas de aprobación de la plataforma.
+        {link}
+
+        AudioLibre
+        """
+
+        msg, status = MailService.send_email(user["email"], subject, body)
+        return msg, status
