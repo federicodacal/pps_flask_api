@@ -1,5 +1,6 @@
 from flask import current_app, Response
 
+from ..services.mail_service import MailService
 from ..middlewares.api_exception import APIException
 from ..repositories.audio_repository import AudioRepository
 from ..repositories.item_repository import ItemRepository
@@ -170,17 +171,31 @@ class AudioService:
             if audio is None:
                 return {"message": f"Audio con id {audio_id} no encontrado"}, 404
             
+            creator = audio.creator
+            if creator is None:
+                return {"message": f"El audio no tiene un creador asociado"}, 404
+            
+            user = creator.user
+            if user is None:
+                return {"message": f"El creador no tiene un usuario asociado"}, 404
+            
+            user_data = {
+                "email": user.email,
+                "user_detail": {
+                    "full_name": user.user_detail.full_name
+                    },
+                "audio_name": audio.audio_name
+            }
+            
             updated_audio = AudioRepository.update_state_audio(audio_id, updated_state)
             updated_item = ItemRepository.update_state_item(audio.item.ID, updated_state)
-            
-            if updated_state == 'active':
-                mail = 'audio active'
-                #mail, status = MailService.send_approval_email(audio_data)
-            elif updated_state == 'inactive':
-                mail = 'audio inactive'
-                #mail, status = MailService.send_rejection_email(audio_data)
-                #AudioService.delete_audio(audio_id)
 
+            mail = None
+            if updated_state == 'active':
+                mail, status = MailService.send_audio_approval_email(user_data)
+            elif updated_state == 'inactive':
+                mail, status = MailService.send_audio_rejection_email(user_data)
+            
             db.session.commit()
 
             return {
