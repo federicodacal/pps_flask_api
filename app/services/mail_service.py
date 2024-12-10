@@ -44,7 +44,7 @@ class MailService:
 
     @staticmethod
     def send_confirmation_email(user_email, full_name, user_id):
-        confirmation_link = f"{ConfigService.current_url}/users/confirm-email/{user_id}"
+        confirmation_link = f"https://pps-nextjs-frontend.vercel.app/pages/mail/{user_id}"
 
         subject = "Confirmación de email - AudioLibre"
         body = f"""
@@ -60,7 +60,7 @@ class MailService:
 
     @staticmethod
     def send_approval_email(user):
-        link = f"{ConfigService.current_url}"
+        link = "https://pps-nextjs-frontend.vercel.app/"
         subject = "Aprobación de usuario - AudioLibre"
         body = f"""
         {user["user_detail"]["full_name"]}, nos alegra comunicar que tu usuario se encuentra habilitado para usar AudioLibre.
@@ -75,7 +75,7 @@ class MailService:
     
     @staticmethod
     def send_rejection_email(user):
-        link = f"{ConfigService.current_url}"
+        link = "https://pps-nextjs-frontend.vercel.app/"
         subject = "Rechazo de solicitud de usuario - AudioLibre"
         body = f"""
         {user["user_detail"]["full_name"]}, lamentamos comunicarte que tu usuario no cumple con las normas de aprobación de la plataforma.
@@ -89,7 +89,7 @@ class MailService:
     
     @staticmethod
     def send_debt_notice_email(user, days_overdue):
-        link = f"{ConfigService.current_url}"
+        link = "https://pps-nextjs-frontend.vercel.app/"
         subject = "Suscripción impaga - AudioLibre"
         body = f"""
         {user["user_detail"]["full_name"]}, nos comunicamos para dar aviso que tu subscripción se encuentra impaga, con {days_overdue} días desde el vencimiento. 
@@ -104,7 +104,7 @@ class MailService:
     
     @staticmethod
     def send_deactivation_email(user):
-        link = f"{ConfigService.current_url}"
+        link = "https://pps-nextjs-frontend.vercel.app/"
         subject = "Inhabilitación de creador - AudioLibre"
         body = f"""
         {user["user_detail"]["full_name"]}, lamentamos informarte que por superar el periódo límite de renovación por suscripción impaga sus facultades como 'Creador' han sido inhabilitadas.
@@ -118,13 +118,15 @@ class MailService:
     
     @staticmethod
     def send_purchase_email_to_buyer(buyer_email, purchase_details):
+        link = "https://pps-nextjs-frontend.vercel.app/"
         subject = "Confirmación de tu compra - AudioLibre"
         body = "Gracias por tu compra en AudioLibre. Aquí están los detalles de tu compra:\n\n"
 
         for detail in purchase_details:
             body += f" - {detail['audio_name']}: ${detail['price']}\n"
 
-        body += "\nEsperamos que disfrutes tu compra.\n\nAudioLibre"
+        body += f"\nEsperamos que disfrutes tu compra.\n\nAudioLibre {link}"
+        
 
         msg, status = MailService.send_email(buyer_email, subject, body)
         return msg, status
@@ -144,7 +146,7 @@ class MailService:
     
     @staticmethod
     def send_audio_approval_email(user):
-        link = f"{ConfigService.current_url}"
+        link = "https://pps-nextjs-frontend.vercel.app/"
         subject = "Aprobación de audio - AudioLibre"
         body = f"""
         {user["user_detail"]["full_name"]}, nos alegra comunicar que tu audio {user["audio_name"]} se encuentra habilitado.
@@ -158,7 +160,7 @@ class MailService:
     
     @staticmethod
     def send_audio_rejection_email(user):
-        link = f"{ConfigService.current_url}"
+        link = "https://pps-nextjs-frontend.vercel.app/"
         subject = "Rechazo de solicitud de audio - AudioLibre"
         body = f"""
         {user["user_detail"]["full_name"]}, lamentamos comunicarte que tu audio {user["audio_name"]} no cumple con las normas de aprobación de la plataforma.
