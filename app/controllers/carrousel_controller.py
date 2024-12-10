@@ -125,7 +125,11 @@ class CarrouselController:
         mongo = current_app.config['MONGODB']
         data = request.get_json()
 
-        carrousel_id_int = int(carrousel_id)
+        try:
+            carrousel_id_int = int(carrousel_id)
+        except ValueError:
+            return jsonify({"error": "Invalid carrousel ID format"}), 400
+
         carrousel = mongo.carrouselmodels.find_one({"id": carrousel_id_int})
         if not carrousel:
             return jsonify({"error": "Carrousel not found"}), 404
@@ -133,21 +137,29 @@ class CarrouselController:
         mongo.carrouselmodels.update_one(
             {"id": carrousel_id_int},
             {"$set": {
-                "titulo": data.get('titulo', carrousel_id['titulo']), 
-                "descripcion": data.get('descripcion', carrousel_id['descripcion']), 
+                "titulo": data.get('titulo', carrousel.get('titulo')), 
+                "descripcion": data.get('descripcion', carrousel.get('descripcion')), 
                 "fecha_modificacion": datetime.datetime.now() }
             }  
         )
-        return jsonify({"message": "Category updated"}), 200
+        return jsonify({"message": "Carrousel updated"}), 200
     
     @staticmethod
     def delete_carrousel(carrousel_id):
         mongo = current_app.config['MONGODB']
+        grid_fs = GridFS(mongo, collection="images")
 
         carrousel_id_int = int(carrousel_id)
         carrousel = mongo.carrouselmodels.find_one({"id": carrousel_id_int})
         if not carrousel:
             return jsonify({"error": "Carrousel not found"}), 404
         
+        file_id = carrousel.get("file_id")
+        if file_id:
+            try:
+                grid_fs.delete(ObjectId(file_id))
+            except Exception as e:
+                return jsonify({"error": f"Failed to delete image: {str(e)}"}), 500
+
         mongo.carrouselmodels.delete_one({"id": carrousel_id_int})
         return jsonify({"message": "Carrousel deleted"}), 200
