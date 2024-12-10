@@ -60,3 +60,9 @@ class UserController:
     def confirm_user_email(user_id):
         response, status_code = UserService.confirm_user_email(user_id)
         return jsonify(response), status_code
+    
+    @staticmethod
+    def change_password(user_id):
+        data = request.json or {}
+        response, status_code = UserService.change_password(user_id, data)
+        return jsonify(response), status_code

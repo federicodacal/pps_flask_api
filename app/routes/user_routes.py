@@ -14,3 +14,4 @@ user_routes.route('/users/approval/<string:user_id>', methods=['POST'])(UserCont
 user_routes.route('/users/approval/<string:user_id>', methods=['DELETE'])(UserController.deactivate_user)
 user_routes.route('/users/creator/<string:creator_id>', methods=['DELETE'])(UserController.deactivate_creator)
 user_routes.route('/users/creator/<string:creator_id>', methods=['POST'])(UserController.activate_creator)
+user_routes.route('/users/change-password/<string:user_id>', methods=['PUT'])(UserController.change_password)

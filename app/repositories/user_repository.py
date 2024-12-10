@@ -49,7 +49,6 @@ class UserRepository:
         if not user:
             return None
 
-        user.pwd = data.get('pwd', user.pwd)
         user.type = data.get('type', user.type)
         user.state = data.get('state', user.state)
         user.modified_at = datetime.datetime.now(datetime.timezone.utc)
@@ -64,6 +63,18 @@ class UserRepository:
             return None
         
         user.state = state
+        user.modified_at = datetime.datetime.now(datetime.timezone.utc) 
+
+        return user
+    
+    @staticmethod 
+    def update_password(ID, pwd):
+        user = User.query.get(ID)
+
+        if not user:
+            return None 
+        
+        user.pwd = pwd 
         user.modified_at = datetime.datetime.now(datetime.timezone.utc) 
 
         return user

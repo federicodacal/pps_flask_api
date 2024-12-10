@@ -80,10 +80,11 @@ def validate_account_type(user_type):
 
 @staticmethod
 def validate_user(data, action="create"):
-    required_fields = ["pwd", "personal_ID", "phone_number", "type", "username", "full_name"]
+    required_fields = ["personal_ID", "phone_number", "type", "username", "full_name"]
 
     if action == "create":
         required_fields.append("email")
+        required_fields.append("pwd")
 
     valid, message = validate_required_fields(data, required_fields)
     if not valid:

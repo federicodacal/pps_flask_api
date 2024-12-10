@@ -1,6 +1,6 @@
 import datetime
 from werkzeug.security import generate_password_hash
-
+from werkzeug.security import check_password_hash
 from ..repositories.subscription_repository import SubscriptionRepository
 from ..repositories.subscription_billing_repository import SubscriptionBillingRepository
 from ..repositories.audio_repository import AudioRepository
@@ -326,3 +326,47 @@ class UserService:
         except Exception as e:
             db.session.rollback()
             return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
+        
+
+    @staticmethod
+    def change_password(user_id, data):
+        if not data: 
+            return {"message": "Los datos proporcionados están vacíos"}, 400
+        
+        if 'new_password' not in data:
+            return {"message": "Falta el campo new_password"}, 400
+        
+        if 'current_password' not in data:
+            return {"message": "Falta el campo current_password"}, 400
+        
+        try: 
+            user = UserRepository.get_user_by_id_with_details(user_id)
+
+            if not user:
+                return {"message": f"Usuario con id {user_id} no encontrado"}, 404
+            
+            user_data = user.to_dict()
+
+            current_password_hash = user_data["pwd"]
+
+            if not check_password_hash(current_password_hash, data["current_password"]):
+                return {"message": "Contraseña actual incorrecta"}, 401
+
+            hashed_password = generate_password_hash(data["new_password"])
+            
+            UserRepository.update_password(user_id, hashed_password)
+            
+            updated_user = UserRepository.get_user_by_id_with_details(user_id)
+
+            db.session.commit()
+
+            return {
+                "message":"Contraseña actualizada",
+                "user_id": updated_user.to_dict() if updated_user else None
+            }, 200
+        
+        except Exception as e:
+            db.session.rollback()
+            return {"message": f'Ocurrió un error: {str(e)}', "error_type": "Unhandled Exception"}, 500
+        
+        
